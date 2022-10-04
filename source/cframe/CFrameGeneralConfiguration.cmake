@@ -4,12 +4,6 @@
 #
 # -----------------------------------------------------------------------------
 
-option(
-    CFRAME_FLAT_SOURCE_TREE
-    "Determines whether project subfolders are automatically created in IDES"
-    ON
-)
-
 set( CFRAME_INSTALL_BIN_DIR bin
     CACHE STRING "Directory where binaries will be installed"
 )
