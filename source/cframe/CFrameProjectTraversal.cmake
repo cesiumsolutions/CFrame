@@ -35,11 +35,11 @@ function( cframe_load_projects )
   # Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
   # ---------------------------------------------------------------------------
   cframe_search_subdirs(
-      FILENAME CMakeLists.txt
+      REGEXPR CMakeLists.txt
       ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
       OUTVAR projectPaths
       RECURSIVE OFF
-      STOPWHENFOUND TRUE
+      STOPWHENFOUND ON
   )
 
   foreach( projectPath ${projectPaths} )
@@ -48,7 +48,7 @@ function( cframe_load_projects )
   endforeach() # projectPaths
 
   # ---------------------------------------------------------------------------
-  # Load projects found by CFRAME_PROJECTS using CFRAME_PROJECT_SEARCH_PATHS.
+  # Load projects specified by CFRAME_PROJECTS using CFRAME_PROJECT_SEARCH_PATHS.
   # ---------------------------------------------------------------------------
 
   foreach( projectName ${CFRAME_PROJECTS} )
