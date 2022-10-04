@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
-#
-# Functions, processes and variables for traversing Projects
+# @file CframeProjectTraversal.cmake
+# Variables and processes for looking for and loading Projects
 #
 # -----------------------------------------------------------------------------
 
@@ -26,8 +26,9 @@ set(
     "List of directories to search for when specifying CFRAME_PROJECTS."
 )
 
-
-# Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS
+# -----------------------------------------------------------------------------
+# Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
+# -----------------------------------------------------------------------------
 
 cframe_search_subdirs(
     FILENAME CMakeLists.txt
@@ -37,28 +38,20 @@ cframe_search_subdirs(
     STOPWHENFOUND TRUE
 )
 
-message( "Project Paths: ${projectPaths}" )
-
 foreach( projectPath ${projectPaths} )
+  cframe_add_subdirectory( ${projectPath} )
+endforeach() # projectPaths
 
-  # Need to find if projectPath is a subdirectory of current source
-  # directory in which case we can directly call add_subdirectory.
-  # Otherwise, use the leaf directory as the binary directory.
-  # @todo Would be nice to use the partial path under the AUTOLOAD_PATHS
-  # as the binary directory.
-  
-  file( RELATIVE_PATH relPath ${CMAKE_CURRENT_SOURCE_DIR} ${projectPath} )
-  string( SUBSTRING ${relPath} 0 2 relPathPrefix )
-  message( "Project Path: ${projectPath}" )
-  message( "Relative Path: ${relPath}" )
-  message( "RelPathPrefix: ${relPathPrefix}" )
+# -----------------------------------------------------------------------------
+# Load projects found by CFRAME_PROJECTS using CFRAME_PROJECT_SEARCH_PATHS.
+# -----------------------------------------------------------------------------
 
-  if ( relPathPrefix STREQUAL ".." )
-      get_filename_component( projectName ${relPath} NAME_WE )
-      add_subdirectory( ${relPath} ${projectName} )
-  else()
-      add_subdirectory( ${relPath} )
-  endif()
-endforeach()
+foreach( projectName ${CFRAME_PROJECTS} )
 
+  foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
+    if ( IS_DIRECTORY ${searchPath}/${projectName} )
+      cframe_add_subdirectory( ${searchPath}/${projectName} )
+    endif()
+  endforeach()
 
+endforeach() # CFRAME_PROJECTS

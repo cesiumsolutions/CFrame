@@ -9,7 +9,7 @@
 # directory
 # @param directory [in] The directory to get relative path to
 # @param files [in] List of files to determine relative path
-# @return outVar 
+# @return outVar
 # ------------------------------------------------------------------------------
 function( cframe_files_relative_paths outVar directory files )
 
@@ -282,7 +282,7 @@ function( cframe_traverse_directories )
     )
   endif()
 
-  
+
   if ( DEFINED ARGS_PARAMS )
     set( params ${ARGS_PARAMS} )
   endif()
@@ -301,5 +301,30 @@ function( cframe_traverse_directories )
 ##        results
 ##    )
 ##  endforeach()
-  
-endfunction()
+
+endfunction() # cframe_traverse_directories
+
+# ------------------------------------------------------------------------------
+# Determines if subDir is a subdirectory of current source directory in which
+# case we can directly call add_subdirectory.
+# Otherwise, use the leaf directory as the binary directory.
+#
+# @param subDir [in] The subdirectory to add, can be absolute or relative
+# @todo Would be nice to use the partial path under the AUTOLOAD_PATHS
+# as the binary directory.
+# ------------------------------------------------------------------------------
+function( cframe_add_subdirectory subDir )
+
+  file( RELATIVE_PATH relPath ${CMAKE_CURRENT_SOURCE_DIR} ${subDir} )
+  string( SUBSTRING ${relPath} 0 2 relPathPrefix )
+  message( "SubDir Path:   ${subDir}" )
+  message( "Relative Path: ${relPath}" )
+
+  if ( relPathPrefix STREQUAL ".." )
+      get_filename_component( name ${relPath} NAME_WE )
+      add_subdirectory( ${relPath} ${name} )
+  else()
+      add_subdirectory( ${relPath} )
+  endif()
+
+endfunction() # cframe_add_subdirectory
