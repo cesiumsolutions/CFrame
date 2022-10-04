@@ -17,6 +17,8 @@ include( CFrameGeneralConfiguration )
 
 # High-level CFrame-specific Utilities
 include( CFrameProjectTraversal )
+cframe_load_projects()
+
 
 #include_directories( testtools )
 

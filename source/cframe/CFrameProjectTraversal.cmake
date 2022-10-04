@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
-# @file CframeProjectTraversal.cmake
-# Variables and processes for looking for and loading Projects
+# @file CFrameProjectTraversal.cmake
+# Variables and functions for looking for and loading Projects
 #
 # -----------------------------------------------------------------------------
 
@@ -23,35 +23,43 @@ set(
 set(
     CFRAME_PROJECTS ""
     CACHE PATH
-    "List of directories to search for when specifying CFRAME_PROJECTS."
+    "List of projects to load, referencing CFRAME_PROJECT_SEARCH_PATHS."
 )
 
 # -----------------------------------------------------------------------------
-# Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
+# Load projects using CFRAME_PROJECT_AUTOLOAD_PATHS, CFRAME_PROJECTS variables.
 # -----------------------------------------------------------------------------
+function( cframe_load_projects )
 
-cframe_search_subdirs(
-    FILENAME CMakeLists.txt
-    ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
-    OUTVAR projectPaths
-    RECURSIVE OFF
-    STOPWHENFOUND TRUE
-)
+  # ---------------------------------------------------------------------------
+  # Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
+  # ---------------------------------------------------------------------------
+  cframe_search_subdirs(
+      FILENAME CMakeLists.txt
+      ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
+      OUTVAR projectPaths
+      RECURSIVE OFF
+      STOPWHENFOUND TRUE
+  )
 
-foreach( projectPath ${projectPaths} )
-  cframe_add_subdirectory( ${projectPath} )
-endforeach() # projectPaths
+  foreach( projectPath ${projectPaths} )
+    message( "Automatically adding Project: ${projectPath}" )
+    cframe_add_subdirectory( ${projectPath} )
+  endforeach() # projectPaths
 
-# -----------------------------------------------------------------------------
-# Load projects found by CFRAME_PROJECTS using CFRAME_PROJECT_SEARCH_PATHS.
-# -----------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------
+  # Load projects found by CFRAME_PROJECTS using CFRAME_PROJECT_SEARCH_PATHS.
+  # ---------------------------------------------------------------------------
 
-foreach( projectName ${CFRAME_PROJECTS} )
+  foreach( projectName ${CFRAME_PROJECTS} )
 
-  foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
-    if ( IS_DIRECTORY ${searchPath}/${projectName} )
-      cframe_add_subdirectory( ${searchPath}/${projectName} )
-    endif()
-  endforeach()
+    foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
+      if ( IS_DIRECTORY ${searchPath}/${projectName} )
+        message( "Adding Project: ${searchPath}/${projectName}" )
+        ##cframe_add_subdirectory( ${searchPath}/${projectName} )
+      endif()
+    endforeach()
 
-endforeach() # CFRAME_PROJECTS
+  endforeach() # CFRAME_PROJECTS
+
+endfunction() # cframe_load_projects
