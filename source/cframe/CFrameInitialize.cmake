@@ -18,8 +18,6 @@ include( CFrameGeneralConfiguration )
 # High-level CFrame-specific Utilities
 include( CFrameProjectTraversal )
 
-
-
 #include_directories( testtools )
 
 #include( CFrameInternal )

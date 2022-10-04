@@ -65,9 +65,9 @@ endfunction() # cframe_search_subdir_impl
 # @brief Searches subdirectories for given file returning list of paths containing
 #        file.
 # Options:
-# @param RECURSIVE [in] True if directory should recurse subdirs (default: TRUE)
+# @param RECURSIVE [in] True if directory should recurse subdirs (default: ON)
 # @param STOPWHENFOUND [in] True if search terminates after first file is found
-#                          (default: FALSE)
+#                          (default: OFF)
 # Single value args:
 # @param FILENAME [in] The name of the file to search for
 # @param OUTVAR [out] The name of the variable to store the results in
@@ -92,8 +92,8 @@ function( cframe_search_subdirs )
   ##message( "cframe_search_subdirs" )
 
   # Assign default values to parameters
-  set( recursive     true )
-  set( stopWhenFound false )
+  set( recursive     ON )
+  set( stopWhenFound OFF )
   set( verbosity     1 )
 
   # Set up and parse multiple arguments
@@ -181,20 +181,18 @@ endfunction() # cframe_search_subdirs
 # @brief Traverses all of the files in specified directories, and for each file
 #        passing the specified filter, executes the specified predicate.
 #
-# Options:
-# @param RECURSIVE [in] True if should recurse subdirs (default: FALSE)
-#
-# Single value args:
+# @param DIRECTORIES [in] List of paths to directories to traverse.
 # @param FILTER [in] Regex filter to apply to each file found in directory
 #                    (default: *)
 # @param PREDICATE [in] The name of the function to execute for each file found.
-# @param VERBOSITY [in] The verbosity level to use for messages (default: 1)
-#
-# Multivalue args:
-# @param DIRECTORIES [in] List of paths to directories to traverse.
 # @param PARAMS [in] Parameters to pass to PREDICATE function. Within the
 #                    Parameters variable, %FILENAME% will be replaced with the
 #                    name of the file currently being processed.
+# @param RECURSIVE [in] True if should recurse subdirs (default: FALSE)
+# @param VERBOSITY [in] The verbosity level to use for messages (default: 1)
+#
+# Multivalue args:
+
 #
 # For example:
 # @code
