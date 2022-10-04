@@ -53,12 +53,18 @@ function( cframe_load_projects )
 
   foreach( projectName ${CFRAME_PROJECTS} )
 
-    foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
-      if ( IS_DIRECTORY ${searchPath}/${projectName} )
-        message( "Adding Project: ${searchPath}/${projectName}" )
-        ##cframe_add_subdirectory( ${searchPath}/${projectName} )
-      endif()
-    endforeach()
+    if ( IS_DIRECTORY ${projectName} )
+      cframe_add_subdirectory( ${projectName} )
+    else()
+      foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
+        if ( IS_DIRECTORY ${searchPath}/${projectName} )
+          message( "Adding Project: ${searchPath}/${projectName}" )
+          cframe_add_subdirectory( ${searchPath}/${projectName} )
+        endif()
+      endforeach()
+
+    endif()
+
 
   endforeach() # CFRAME_PROJECTS
 
