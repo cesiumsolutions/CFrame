@@ -28,13 +28,16 @@
 #         czmharman-assets
 #         czmboostasio
 #     CACHE STRING
-#     "List of Projects to build"
+#         "List of Projects to build"
 # )
 # # Include the main CFrame file
 # include( ${CFRAME_DIR}/CFrame.cmake )
 #
-# # You can then include any of the optional scripts provided by CFrame
+# # You can then include any of the optional module scripts provided by CFrame
 # include( CFrameBuildCommands )
+#
+# # Or set/modify CFAME_MODULE_AUTOLOAD_PATHS to specify paths to automatically
+# # look for module files to load
 # <endcode>
 # -----------------------------------------------------------------------------
 
@@ -44,7 +47,7 @@ message( "CFRAME_PARENT_PATH: ${CFRAME_PARENT_PATH}" )
 set(
     CMAKE_MODULE_PATH
     ${CFRAME_PARENT_PATH}/source/cframe
-    ${CFRAME_PARENT_PATH}/share/cframe/scripts
+    ${CFRAME_PARENT_PATH}/share/cframe/modules
     ${CFRAME_PARENT_PATH}/share/cframe/externals
 )
 

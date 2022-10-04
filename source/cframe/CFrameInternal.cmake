@@ -5,13 +5,13 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# Macro: cframe_prepare_packages
+# Macro: cframe_prepare_projects
 #
-# Do a first pass through all package directories
+# Do a first pass through all project directories
 # and include their CFrameLists.txt file (if it exists).
 #
 # The Product's CFrameLists.txt should do the following:
-# - specify include_directoriem s for the appropriate package subdirectories
+# - specify include_directoriem s for the appropriate project subdirectories
 # - specify the name of external package dependencies, and when possible
 #   the components of those packages. This can be done using the function:
 #
@@ -34,8 +34,8 @@
 #   other dependent Projects can refer to then in a standard way. This done by
 #   using the function:
 #
-#       cframe_publish_package( PACKAGE_NAME
-#           PACKAGE_NAME <name of package>
+#       cframe_publish_project( PROJECT_NAME
+#           PROJECT_NAME <name of project>
 #           VERSION      <parts of version identifier: major minor patch build, number of elements is optional>
 #           DEFINITIONS  <list of definitions>
 #           INCLUDE_DIRS <list of directories to include>
@@ -44,79 +44,79 @@
 #       )
 #
 # Global parameters used:
-#     CFRAME_PACKAGES_DIR
+#     CFRAME_PROJECTS_DIR
 #
 # -----------------------------------------------------------------------------
-macro( cframe_prepare_packages )
+macro( cframe_prepare_projects )
 
-  cframe_message( STATUS 3 "CFrame: MACRO: cframe_prepare_packages" )
+  cframe_message( STATUS 3 "CFrame: MACRO: cframe_prepare_projects" )
 
-  # Analyze all directories under the packages directory.
-  file( GLOB PACKAGE_DIRS
+  # Analyze all directories under the projects directory.
+  file( GLOB PROJECTS_DIR
       LIST_DIRECTORIES TRUE
-      RELATIVE ${CFRAME_PACKAGES_DIR}
-      ${CFRAME_PACKAGES_DIR}/*
+      RELATIVE ${CFRAME_PROJECTS_DIR}
+      ${CFRAME_PROJECTS_DIR}/*
   )
-  cframe_message( STATUS 4 "CFrame: Product directories: ${PACKAGE_DIRS}")
-  foreach( PACKAGE ${PACKAGE_DIRS} )
+  cframe_message( STATUS 4 "CFrame: Project directories: ${PROJECT_DIRS}")
+  foreach( PROJECT ${PROJECT_DIRS} )
 
-    # Only process package subdirectories that contain a CMakeLists.txt file
-    if ( (IS_DIRECTORY ${CFRAME_PACKAGES_DIR}/${PACKAGE}) AND
-         (EXISTS ${CFRAME_PACKAGES_DIR}/${PACKAGE}/CMakeLists.txt) )
+    # Only process project subdirectories that contain a CMakeLists.txt file
+    if ( (IS_DIRECTORY ${CFRAME_PROJECTS_DIR}/${PROJECT}) AND
+         (EXISTS ${CFRAME_PROJECTS_DIR}/${PROJECT}/CMakeLists.txt) )
 
-      list( APPEND CFRAME_BUILD_PACKAGES ${PACKAGE} )
+      list( APPEND CFRAME_BUILD_PROJECTS ${PROJECT} )
 
-      # If package subdirectory contains a CFrameLists.txt file, make it active
+      # If project subdirectory contains a CFrameLists.txt file, make it active
       # by default and process it
-      if ( EXISTS ${CFRAME_PACKAGES_DIR}/${PACKAGE}/CFrameLists.txt )
-        option( BUILD_PACKAGE_${PACKAGE} "Build Product ${PACKAGE}" ON )
-        set( CFRAME_CURRENT_PACKAGE_DIR ${CFRAME_PACKAGES_DIR}/${PACKAGE} )
-        set( CFRAME_CURRENT_PACKAGE_NAME ${PACKAGE} )
-        include( ${CFRAME_PACKAGES_DIR}/${PACKAGE}/CFrameLists.txt )
+      if ( EXISTS ${CFRAME_PROJECTS_DIR}/${PROJECT}/CFrameLists.txt )
+        option( BUILD_PROJECT_${PROJECT} "Build Product ${PROJECT}" ON )
+        set( CFRAME_CURRENT_PROJECT_DIR ${CFRAME_PROJECTS_DIR}/${PROJECT} )
+        set( CFRAME_CURRENT_PROJECT_NAME ${PROJECT} )
+        include( ${CFRAME_PROJECTS_DIR}/${PROJECT}/CFrameLists.txt )
 
         cframe_message( STATUS 4
-            "CFrame: ${PACKAGE} version:      ${${PACKAGE}_VERSION}"
+            "CFrame: ${PROJECT} version:      ${${PROJECT}_VERSION}"
         )
         cframe_message( STATUS 4
-            "CFrame: ${PACKAGE} definitions:  ${${PACKAGE}_DEFINITIONS}"
+            "CFrame: ${PROJECT} definitions:  ${${PROJECT}_DEFINITIONS}"
         )
         cframe_message( STATUS 4
-            "CFrame: ${PACKAGE} include dirs: ${${PACKAGE}_INCLUDE_DIRS}"
+            "CFrame: ${PROJECT} include dirs: ${${PROJECT}_INCLUDE_DIRS}"
         )
         cframe_message( STATUS 4
-            "CFrame: ${PACKAGE} library dirs: ${${PACKAGE}_LIBRARY_DIRS}"
+            "CFrame: ${PROJECT} library dirs: ${${PROJECT}_LIBRARY_DIRS}"
         )
         cframe_message( STATUS 4
-            "CFrame: ${PACKAGE} libraries:    ${${PACKAGE}_LIBRARIES}"
+            "CFrame: ${PROJECT} libraries:    ${${PROJECT}_LIBRARIES}"
         )
 
       else()
-        option( BUILD_PACKAGE_${PACKAGE} "Build Package ${PACKAGE}" OFF )
+        option( BUILD_PROJECT_${PROJECT} "Build Project ${PROJECT}" OFF )
         cframe_message( WARNING 2
-            "CFrame: Package: ${PACKAGE} does not contain a CFrameLists.txt."
+            "CFrame: Project: ${PROJECT} does not contain a CFrameLists.txt."
             "It will be ignored for further processing."
             "See CFrame CMake Modular Framework documentation for further information."
         )
       endif()
 
-      # Automaticay include any directories published by the PACKAGE
-      if ( BUILD_PACKAGE_${PACKAGE} MATCHES ON )
-        if ( DEFINED ${PACKAGE}_INCLUDE_DIRS )
-          cframe_message( STATUS 4 "CFrame: ${PACKAGE}_INCLUDE_DIRS: ${${PACKAGE}_INCLUDE_DIRS}")
-          include_directories( ${${PACKAGE}_INCLUDE_DIRS} )
+      # Automatically include any directories published by the PROJECT
+      if ( BUILD_PROJECT_${PROJECT} MATCHES ON )
+        if ( DEFINED ${PROJECT}_INCLUDE_DIRS )
+          cframe_message( STATUS 4 "CFrame: ${PROJECT}_INCLUDE_DIRS: ${${PROJECT}_INCLUDE_DIRS}")
+          include_directories( ${${PROJECT}_INCLUDE_DIRS} )
         endif()
       endif()
 
     else()
 
       cframe_message( STATUS 2
-          "CFrame: Project ${PACKAGE} is not a directory or does not contain a CMakeLists.txt, skipping"
+          "CFrame: Project ${PROJECT} is not a directory or does not contain a CMakeLists.txt, skipping"
       )
 
     endif() # is directory and CMakeLists.txt exists
-  endforeach() # package subdirectory loop
+  endforeach() # project subdirectory loop
 
-endmacro() # cframe_prepare_packages
+endmacro() # cframe_prepare_projects
 
 # -----------------------------------------------------------------------------
 # Macro: cframe_setup_external_packages
@@ -164,9 +164,9 @@ endmacro() # cframe_setup_external_packages
 #   endif()
 #
 # -----------------------------------------------------------------------------
-macro( cframe_build_packages )
+macro( cframe_build_projects )
 
-  cframe_message( STATUS 3 "CFrame: MACRO: cframe_build_packages" )
+  cframe_message( STATUS 3 "CFrame: MACRO: cframe_build_projects" )
   cframe_message( STATUS 4 "CFrame: Products: ${CFRAME_BUILD_PACKAGES}")
 
   set( CFRAME_BUILD TRUE )
@@ -183,7 +183,7 @@ macro( cframe_build_packages )
   endforeach()
   set( CFRAME_BUILD FALSE )
 
-endmacro() # cframe_build_packages
+endmacro() # cframe_build_projects
 
 # -----------------------------------------------------------------------------
 # Macro: cframe_main
@@ -194,10 +194,10 @@ macro( cframe_main )
 
   cframe_message( STATUS 3 "CFrame: MACRO: cframe_main" )
 
-  cframe_prepare_packages()
+  cframe_prepare_projects()
 
   cframe_setup_external_packages()
 
-  cframe_build_packages()
+  cframe_build_projects()
 
 endmacro() # cframe_prepare

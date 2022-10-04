@@ -4,13 +4,20 @@
 #
 # -----------------------------------------------------------------------------
 
-# Needed for the named parameter arguments
+# Standard CMake Utilities
 include( CMakeParseArguments )
 
+# General Purpose Low-level Utilities
 include( CFrameMessage )
 include( CFrameListUtilities )
+include( CFrameDirectoryUtilities )
+
+# Configuration options
 include( CFrameGeneralConfiguration )
+
+# High-level CFrame-specific Utilities
 include( CFrameProjectTraversal )
+
 
 
 #include_directories( testtools )
