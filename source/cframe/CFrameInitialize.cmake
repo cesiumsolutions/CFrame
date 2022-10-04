@@ -15,15 +15,15 @@ include( CFrameDirectoryUtilities )
 # Configuration options
 include( CFrameGeneralConfiguration )
 
-# High-level CFrame-specific Utilities
-include( CFrameProjectTraversal )
-cframe_load_projects()
-
-
 #include_directories( testtools )
 
 #include( CFrameInternal )
 #include( CFrameUtilities )
 #include( CFrameExternalPackages )
 #include( CFrameProjects )
-#include( CFrameBuildFunctions )
+include( CFrameBuildFunctions )
+
+
+# High-level CFrame-specific Utilities
+include( CFrameProjectTraversal )
+cframe_load_projects()
