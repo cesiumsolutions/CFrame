@@ -20,9 +20,6 @@ set( CMAKE_CXX_STANDARD 14 CACHE STRING "Version of C++ to use" )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 if ( WIN32 )
-  set( PLATFORM_FLAGS "/EHsc /bigobj" CACHE STRING "Platform specific compile flags" )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PLATFORM_FLAGS}" )
-  set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${PLATFORM_FLAGS}" )
 
   # Set Windows version, used by socket libraries
   set(
@@ -31,6 +28,12 @@ if ( WIN32 )
       "Version of Windows to build for"
   )
   add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
+
+  set( PLATFORM_FLAGS "/EHsc /bigobj" CACHE STRING "Platform specific compile flags" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PLATFORM_FLAGS}" )
+  set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${PLATFORM_FLAGS}" )
+
+  add_compile_options( /EHsc /bigobj )
 
   foreach( CONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${CONFIG} UCONFIG )
