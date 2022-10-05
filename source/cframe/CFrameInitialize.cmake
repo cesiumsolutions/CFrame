@@ -21,9 +21,11 @@ include( CFrameGeneralConfiguration )
 #include( CFrameUtilities )
 #include( CFrameExternalPackages )
 #include( CFrameProjects )
-include( CFrameBuildFunctions )
 
 
 # High-level CFrame-specific Utilities
+include( CFrameModuleTraversal )
+cframe_load_modules()
+
 include( CFrameProjectTraversal )
 cframe_load_projects()
