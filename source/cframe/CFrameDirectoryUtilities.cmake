@@ -357,8 +357,6 @@ function( cframe_add_subdirectory subDir )
 
   file( RELATIVE_PATH relPath ${CMAKE_CURRENT_SOURCE_DIR} ${subDir} )
   string( SUBSTRING ${relPath} 0 2 relPathPrefix )
-  message( "SubDir Path:   ${subDir}" )
-  message( "Relative Path: ${relPath}" )
 
   if ( relPathPrefix STREQUAL ".." )
       get_filename_component( name ${relPath} NAME_WE )
