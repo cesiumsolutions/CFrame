@@ -6,10 +6,10 @@
 #
 # Main script to be included by top-level project CMakeLists.txt files
 #
-# Example:
+# Example toplevel CMakeLists.txt:
 # <code>
 # cmake_minimum_required( VERSION 3.20 )
-# project( harman-calibration-tools )
+# project( my-awesome-project )
 #
 # set( CFRAME_DIR "" CACHE PATH "Directory to CFrame" )
 # if ( NOT EXISTS ${CFRAME_DIR} )
@@ -20,29 +20,35 @@
 #   exit()
 # endif()
 #
-# # Optionally pre-set CFRAME_PROJECTS, but these could also be set
-# # interactively, e.g. within CMake GUI.
+# # Optionally pre-set/modify CFRAME_MODULE_AUTOLOAD_PATHS to specify paths to
+# # automatically look for module files to load (can also be done in cmake-gui
+# # or on the command line).
+# # (default: ${CFRAME_DIR}/share/cframe/modules)
+# set( CFRAME_MODULE_AUTOLOAD_PATHS
+#      ${CFRAME_DIR}/share/cframe/modules
+#      /path/to/myproject/cmake/modules
+# )
+#
+# # Optionally pre-set CFRAME_PROJECTS (can also be done in cmake-gui or on the
+# # command line).
 # set(
 #     CFRAME_PROJECTS
-#         czmharman
-#         czmharman-assets
-#         czmboostasio
+#         project1
+#         project2
+#         project3
 #     CACHE STRING
 #         "List of Projects to build"
 # )
-# # Include the main CFrame file
+#
+# # Bootstrap CFrame. This will automatically load CMake modules specified by
+# # CFRAME_MODULE_AUTOLOAD_PATHS, CFRAME_MODULES, and projects specified by
+# # CFRAME_PROJECT_AUTOLOAD_PATHS, and CFRAME_PROJECTS.
 # include( ${CFRAME_DIR}/CFrame.cmake )
 #
-# # You can then include any of the optional module scripts provided by CFrame
-# include( CFrameBuildCommands )
-#
-# # Or set/modify CFAME_MODULE_AUTOLOAD_PATHS to specify paths to automatically
-# # look for module files to load
 # <endcode>
 # -----------------------------------------------------------------------------
 
 cmake_path( GET CMAKE_CURRENT_LIST_FILE PARENT_PATH CFRAME_PARENT_PATH )
-message( "CFRAME_PARENT_PATH: ${CFRAME_PARENT_PATH}" )
 
 set(
     CMAKE_MODULE_PATH
@@ -51,4 +57,18 @@ set(
     ${CFRAME_PARENT_PATH}/share/cframe/externals
 )
 
-include( CFrameInitialize )
+# Standard CMake Utilities
+include( CMakeParseArguments )
+
+# General Purpose Low-level Utilities
+include( CFrameMessage )
+include( CFrameListUtilities )
+include( CFrameDirectoryUtilities )
+
+# Bootstrap Modules loading
+include( CFrameModuleTraversal )
+cframe_load_modules()
+
+# Add projects based on variables
+include( CFrameProjectTraversal )
+cframe_load_projects()
