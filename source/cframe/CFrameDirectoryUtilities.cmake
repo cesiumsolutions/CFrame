@@ -25,7 +25,7 @@ endfunction() # cframe_files_relative_paths
 # Implementation part for cframe_search_subdirs for directories
 # -----------------------------------------------------------------------------
 
-function( cframe_search_subdir_impl dir filter recursive maxResults outVar )
+function( cframe_search_subdir_impl dir filter recurseMode maxResults outVar )
 
   set( localOutVar ${${outVar}} )
   message( "cframe_search_subdir_impl: ${dir} [${localOutVar}]" )
@@ -40,9 +40,9 @@ function( cframe_search_subdir_impl dir filter recursive maxResults outVar )
 
     if ( IS_DIRECTORY ${dir}/${child} )
 
-      if ( ${recursive} )
+      if ( NOT ${recurseMode} STREQUAL "OFF" )
         cframe_search_subdir_impl(
-            ${dir}/${child} ${filter} ${recursive} ${maxResults} localOutVar
+            ${dir}/${child} ${filter} ${recurseMode} ${maxResults} localOutVar
         )
       endif()
 
@@ -76,7 +76,10 @@ endfunction() # cframe_search_subdir_impl
 # @brief Searches subdirectories for given file returning list of paths containing
 #        file.
 # @param DIRECTORIES [in] List of paths to directories to search for file
-# @param RECURSIVE [in] True if directory should recurse subdirs (default: TRUE)
+# @param RECURSE_MODE [in] Determines subdirectory traversal:
+#                          OFF: No directory recursion
+#                          ALWAYS: Always recurse subdirectories
+#                          UNTIL_FOUND: Recurse only until matches are found
 # @param MAXRESULTS [in] Maximum number of results to return, anything <= 0 means
 #                        return as many as possible. (default: 0)
 # @param FILTER [in] The regex filter to apply to the filename.
@@ -100,7 +103,7 @@ function( cframe_search_subdirs )
   ##message( "cframe_search_subdirs" )
 
   # Assign default values to parameters
-  set( recursive  ON )
+  set( recurseMode  ALWAYS )
   set( maxResults 0 )
   set( verbosity  1 )
 
@@ -108,7 +111,7 @@ function( cframe_search_subdirs )
   set( options
   )
   set( oneValueArgs
-      RECURSIVE
+      RECURSE_MODE
       FILTER
       MAXRESULTS
       OUTVAR
@@ -161,22 +164,36 @@ function( cframe_search_subdirs )
     )
   endif()
 
-  if ( DEFINED cframe_search_subdirs_RECURSIVE )
-    set( recursive ${cframe_search_subdirs_RECURSIVE} )
+  if ( DEFINED cframe_search_subdirs_RECURSE_MODE )
+    set( recurseMode ${cframe_search_subdirs_RECURSE_MODE} )
   endif()
+  if (
+    ( NOT ${recurseMode} STREQUAL "OFF" ) AND
+    ( NOT ${recurseMode} STREQUAL "ALWAYS" ) AND
+    ( NOT ${recurseMode} STREQUAL "UNTIL_FOUND" )
+  )
+    cframe_message(
+        MODE FATAL_ERROR
+        TAGS CFrame DirectoryUtils
+        VERBOSITY ${verbosity}
+        MESSAGE
+            "cframe_search_dirs(): Invalid RECURSE_MODE [${recurseMode}], aborting"
+    )    
+  endif()
+  
   if ( DEFINED cframe_search_subdirs_MAXRESULTS )
     set( maxResults ${cframe_search_subdirs_MAXRESULTS} )
   endif()
 
   ##message( "filter:      ${filter}" )
-  ##message( "recursive:   ${recursive}" )
+  ##message( "recurseMode: ${recurseMode}" )
   ##message( "maxResults:  ${maxResults}" )
   ##message( "directories: ${directories}" )
 
   set( results "" )
   foreach( dir ${directories} )
     cframe_search_subdir_impl(
-        ${dir} ${filter} ${recursive} ${maxResults} results
+        ${dir} ${filter} ${recurseMode} ${maxResults} results
     )
   endforeach()
   message( "Finished: ${results}" )
