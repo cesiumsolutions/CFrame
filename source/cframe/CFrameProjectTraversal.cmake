@@ -38,10 +38,10 @@ function( cframe_load_projects )
   message("\n\n\n")
   cframe_search_subdirs(
       FILTER "^CMakeLists.txt$"
-      ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
+      DIRECTORIES ${CFRAME_PROJECT_AUTOLOAD_PATHS}
       OUTVAR projectPaths
-      RECURSIVE ON
-      MAXRESULTS 3
+      RECURSE_MODE UNTIL_FOUND
+      MAXRESULTS 0
   )
   message("\nProject Paths: ${projectPaths}" )
   message("\n\n\n")

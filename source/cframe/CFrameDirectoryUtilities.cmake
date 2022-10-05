@@ -25,9 +25,12 @@ endfunction() # cframe_files_relative_paths
 # Implementation part for cframe_search_subdirs for directories
 # -----------------------------------------------------------------------------
 
-function( cframe_search_subdir_impl dir filter recurseMode maxResults outVar )
+function(
+    cframe_search_subdir_impl
+    dir filter recurseMode maxResults outResults
+)
 
-  set( localOutVar ${${outVar}} )
+  set( localOutVar ${${outResults}} )
   message( "cframe_search_subdir_impl: ${dir} [${localOutVar}]" )
 
   file(
@@ -36,40 +39,58 @@ function( cframe_search_subdir_impl dir filter recurseMode maxResults outVar )
     ${dir}/*
   )
 
+  set( files "" )
+  set( dirs "" )
   foreach( child ${children} )
-
     if ( IS_DIRECTORY ${dir}/${child} )
-
-      if ( NOT ${recurseMode} STREQUAL "OFF" )
-        cframe_search_subdir_impl(
-            ${dir}/${child} ${filter} ${recurseMode} ${maxResults} localOutVar
-        )
-      endif()
-
-    else() # IS_FILE
-
-      message( "cframe_search_subdir_impl: ${dir}/${child} [${localOutVar}]" )
-
-      string( REGEX MATCH ${filter} matchResult ${child} )
-      if ( NOT "${matchResult}" STREQUAL "" )
-        message( "Match found: ${dir}/${child}" )
-        set( localOutVar ${localOutVar} ${dir}/${child} )
-        message( "Updated List: ${localOutVar}" )
-
-        if ( ${maxResults} GREATER 0 )
-          list( LENGTH localOutVar currentLength )
-          message( "Updated Length: ${currentLength}" )
-          if ( currentLength GREATER_EQUAL ${maxResults} )
-            set( ${outVar} ${localOutVar} PARENT_SCOPE )
-            return()
-          endif() # max results reached
-        endif() # limited results
-      endif() # Filter matched
-    endif() # IS_FILE
-
+      list( APPEND dirs ${dir}/${child} )
+    else()
+      list( APPEND files ${child} )
+    endif()
   endforeach()
 
-  set( ${outVar} ${localOutVar} PARENT_SCOPE )
+  # Process files
+  set( matchFound OFF )
+  foreach( file ${files} )
+    
+    message( "cframe_search_subdir_impl: ${dir}/${file} [${localOutVar}]" )
+
+    string( REGEX MATCH ${filter} matchResult ${file} )
+    message( "Filter result: ${filter} [${matchResult}] ${file}" )
+    if ( NOT "${matchResult}" STREQUAL "" )
+      message( "Match found: ${dir}/${file}" )
+      set( matchFound ON )
+      set( localOutVar ${localOutVar} ${dir}/${file} )
+      message( "Updated List: ${localOutVar}" )
+      set( ${outResults} ${localOutVar} PARENT_SCOPE )
+
+      if ( ${maxResults} GREATER 0 )
+        list( LENGTH localOutVar currentLength )
+        message( "Updated Length: ${currentLength}" )
+        if ( currentLength GREATER_EQUAL ${maxResults} )
+          return()
+        endif() # max results reached
+      endif() # limited results
+    endif() # Filter matched
+
+  endforeach() # files
+
+  # Check and traverse subdirs
+  if ( ${recurseMode} STREQUAL "OFF" )
+    return()
+  endif()
+
+  if ( ${matchFound} AND ( ${recurseMode} STREQUAL "UNTIL_FOUND" ) )
+    return()
+  endif()
+
+  foreach( dir ${dirs} )
+    cframe_search_subdir_impl(
+        ${dir}/${child} ${filter} ${recurseMode} ${maxResults} localOutVar
+    )
+  endforeach()
+
+  set( ${outResults} ${localOutVar} PARENT_SCOPE )
 endfunction() # cframe_search_subdir_impl
 
 # -----------------------------------------------------------------------------
