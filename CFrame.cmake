@@ -48,8 +48,9 @@
 # <endcode>
 # -----------------------------------------------------------------------------
 
-cmake_path( GET CMAKE_CURRENT_LIST_FILE PARENT_PATH CFRAME_PARENT_PATH )
-
+get_filename_component(
+    CFRAME_PARENT_PATH ${CMAKE_CURRENT_LIST_FILE} DIRECTORY
+)
 set(
     CMAKE_MODULE_PATH
     ${CFRAME_PARENT_PATH}/source/cframe
