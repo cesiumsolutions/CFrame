@@ -24,6 +24,14 @@ if ( WIN32 )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PLATFORM_FLAGS}" )
   set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${PLATFORM_FLAGS}" )
 
+  # Set Windows version, used by socket libraries
+  set(
+      CFRAME_WIN_VERSION "0x0601"
+      CACHE STRING
+      "Version of Windows to build for"
+  )
+  add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
+
   foreach( CONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${CONFIG} UCONFIG )
     set( CMAKE_CXX_FLAGS_${UCONFIG} "${CMAKE_CXX_FLAGS_${UCONFIG}} ${PLATFORM_FLAGS}" )
