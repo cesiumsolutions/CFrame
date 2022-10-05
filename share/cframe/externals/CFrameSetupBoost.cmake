@@ -100,6 +100,9 @@ else() # Boost_VERSION >= 106900
 
 endif()
 
+# See https://stackoverflow.com/questions/57415206/is-there-a-way-to-get-rid-of-the-new-boost-version-may-have-incorrect-or-missin
+set( Boost_NO_WARN_NEW_VERSIONS 1 )
+
 find_package( Boost REQUIRED
     ${BOOST_COMPONENTS}
 )
