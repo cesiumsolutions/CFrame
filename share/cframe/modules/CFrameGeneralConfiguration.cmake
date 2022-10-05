@@ -7,8 +7,8 @@
 set( CFRAME_INSTALL_BIN_DIR bin
     CACHE STRING "Directory where binaries will be installed"
 )
-set( CFRAME_INSTALL_LIB_DIR bin
-    CACHE STRING "Directory where runtimme libraries will be installed"
+set( CFRAME_INSTALL_LIB_DIR lib
+    CACHE STRING "Directory where runtime libraries will be installed"
 )
 set( CFRAME_INSTALL_DEV_DIR lib
     CACHE STRING "Directory where development libraries will be installed"
