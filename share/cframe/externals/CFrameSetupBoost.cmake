@@ -14,12 +14,13 @@ set( Boost_ADDITIONAL_VERSIONS
     "1.68" "1.68.0"
     "1.71" "1.71.0"
     "1.72" "1.72.0"
+    "1.77" "1.77.0"
 )
 
 if ( WIN32 )
 
   if ( ${CMAKE_GENERATOR} STREQUAL "Visual Studio 16 2019" )
-    set( BOOST_VERSION 1_71_0 CACHE STRING "Version of Boost" )
+    set( BOOST_VERSION 1_77_0 CACHE STRING "Version of Boost" )
   else()
     set( BOOST_VERSION 1_68_0 CACHE STRING "Version of Boost" )
   endif()
