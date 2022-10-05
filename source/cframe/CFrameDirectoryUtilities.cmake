@@ -27,73 +27,67 @@ endfunction() # cframe_files_relative_paths
 
 function( cframe_search_subdir_impl dir filter recursive maxResults outVar )
 
-  message( "cframe_search_subdir_impl: ${dir} [${${outVar}}]" )
-  
+  set( localOutVar ${${outVar}} )
+  message( "cframe_search_subdir_impl: ${dir} [${localOutVar}]" )
+
   file(
     GLOB children
     RELATIVE ${dir}
     ${dir}/*
   )
-  
+
   foreach( child ${children} )
-    
+
     if ( IS_DIRECTORY ${dir}/${child} )
 
       if ( ${recursive} )
-        set( tempOutVar ${outVar} )
         cframe_search_subdir_impl(
-            ${dir}/${child} ${filter} ${recursive} ${maxResults} tempOutVar
+            ${dir}/${child} ${filter} ${recursive} ${maxResults} localOutVar
         )
-        set( ${outVar} ${tempOutVar} PARENT_SCOPE )
       endif()
 
     else() # IS_FILE
-    
-    
-      message( "cframe_search_subdir_impl: ${dir}/${child} [${${outVar}}]" )
-    
+
+      message( "cframe_search_subdir_impl: ${dir}/${child} [${localOutVar}]" )
+
       string( REGEX MATCH ${filter} matchResult ${child} )
       if ( NOT "${matchResult}" STREQUAL "" )
         message( "Match found: ${dir}/${child}" )
-        set( tempOutVar ${${outVar}} ${dir}/${child} )
-        message( "Current List: ${tempOutVar}" )
-        
+        set( localOutVar ${localOutVar} ${dir}/${child} )
+        message( "Updated List: ${localOutVar}" )
+
         if ( ${maxResults} GREATER 0 )
-          list( LENGTH tempOutVar currentLength )
-          message( "Current Length: ${currentLength}" )
+          list( LENGTH localOutVar currentLength )
+          message( "Updated Length: ${currentLength}" )
           if ( currentLength GREATER_EQUAL ${maxResults} )
-            set( ${outVar} ${tempOutVar} PARENT_SCOPE )
+            set( ${outVar} ${localOutVar} PARENT_SCOPE )
             return()
           endif() # max results reached
         endif() # limited results
       endif() # Filter matched
     endif() # IS_FILE
-    
+
   endforeach()
-  
-  
-  set( ${outVar} ${tempOutVar} PARENT_SCOPE )
+
+  set( ${outVar} ${localOutVar} PARENT_SCOPE )
 endfunction() # cframe_search_subdir_impl
 
 # -----------------------------------------------------------------------------
 # @brief Searches subdirectories for given file returning list of paths containing
 #        file.
-# Options:
+# @param DIRECTORIES [in] List of paths to directories to search for file
 # @param RECURSIVE [in] True if directory should recurse subdirs (default: TRUE)
 # @param MAXRESULTS [in] Maximum number of results to return, anything <= 0 means
 #                        return as many as possible. (default: 0)
-# Single value args:
 # @param FILTER [in] The regex filter to apply to the filename.
 # @param OUTVAR [out] The name of the variable to store the results in
 # @param VERBOSITY [in] The verbosity level to use for messages (default: 1)
-# Multivalue args:
-# @param ROOTDIRS [in] List of paths to directories to search for file
 #
 # For example:
 # @code
 # cframe_search_subdirs(
 #     FILTER "[a-zA-Z0-9]*.txt"
-#     ROOTDIRS
+#     DIRECTORIES
 #         projects
 #         special/subprojA
 #         optional/src/subsystem
@@ -121,7 +115,7 @@ function( cframe_search_subdirs )
       VERBOSITY
   )
   set( multiValueArgs
-      ROOTDIRS
+      DIRECTORIES
   )
 
   cmake_parse_arguments(
@@ -136,14 +130,14 @@ function( cframe_search_subdirs )
     set( verbosity ${cframe_search_subdirs_VERBOSITY} )
   endif()
 
-  if ( DEFINED cframe_search_subdirs_ROOTDIRS )
-    set( rootDirs ${cframe_search_subdirs_ROOTDIRS} )
+  if ( DEFINED cframe_search_subdirs_DIRECTORIES )
+    set( directories ${cframe_search_subdirs_DIRECTORIES} )
   else()
     cframe_message(
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_search_dirs() ROOTDIRS not specified, aborting"
+        MESSAGE "cframe_search_dirs() DIRECTORIES not specified, aborting"
     )
   endif()
 
@@ -174,21 +168,21 @@ function( cframe_search_subdirs )
     set( maxResults ${cframe_search_subdirs_MAXRESULTS} )
   endif()
 
-  ##message( "filter: ${filter}" )
-  ##message( "recursive: ${recursive}" )
-  ##message( "maxResults: ${maxResults}" )
-  ##message( "rootDirs: ${rootDirs}" )
+  ##message( "filter:      ${filter}" )
+  ##message( "recursive:   ${recursive}" )
+  ##message( "maxResults:  ${maxResults}" )
+  ##message( "directories: ${directories}" )
 
-  set( cframe_search_subdirs_results "Start" )
-  foreach( dir ${cframe_search_subdirs_ROOTDIRS} )
+  set( results "" )
+  foreach( dir ${directories} )
     cframe_search_subdir_impl(
-        ${dir} ${filter} ${recursive} ${maxResults} cframe_search_subdirs_results
+        ${dir} ${filter} ${recursive} ${maxResults} results
     )
   endforeach()
-  message( "Finished: ${cframe_search_subdirs_results}" )
+  message( "Finished: ${results}" )
 
   set(
-      ${cframe_search_subdirs_OUTVAR} ${cframe_search_subdirs_results}
+      ${cframe_search_subdirs_OUTVAR} ${results}
       PARENT_SCOPE
   )
 
@@ -311,7 +305,7 @@ function( cframe_traverse_directories )
   message( "Params:      ${params}" )
   message( "Recursive:   ${recursive}" )
 
-##  foreach( dir ${cframe_search_subdirs_ROOTDIRS} )
+##  foreach( dir ${cframe_search_subdirs_DIRECTORIES} )
 ##    cframe_search_subdir_impl(
 ##        "${dir}" "${filter}"
 ##        "${recursive}" "${stopWhenFound}"
