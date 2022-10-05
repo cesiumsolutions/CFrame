@@ -31,7 +31,6 @@ function(
 )
 
   set( localOutVar ${${outResults}} )
-  message( "cframe_search_subdir_impl: ${dir} [${localOutVar}]" )
 
   file(
     GLOB children
@@ -52,21 +51,14 @@ function(
   # Process files
   set( matchFound OFF )
   foreach( file ${files} )
-    
-    message( "cframe_search_subdir_impl: ${dir}/${file} [${localOutVar}]" )
-
     string( REGEX MATCH ${filter} matchResult ${file} )
-    message( "Filter result: ${filter} [${matchResult}] ${file}" )
     if ( NOT "${matchResult}" STREQUAL "" )
-      message( "Match found: ${dir}/${file}" )
       set( matchFound ON )
       set( localOutVar ${localOutVar} ${dir}/${file} )
-      message( "Updated List: ${localOutVar}" )
       set( ${outResults} ${localOutVar} PARENT_SCOPE )
 
       if ( ${maxResults} GREATER 0 )
         list( LENGTH localOutVar currentLength )
-        message( "Updated Length: ${currentLength}" )
         if ( currentLength GREATER_EQUAL ${maxResults} )
           return()
         endif() # max results reached
@@ -217,7 +209,6 @@ function( cframe_search_subdirs )
         ${dir} ${filter} ${recurseMode} ${maxResults} results
     )
   endforeach()
-  message( "Finished: ${results}" )
 
   set(
       ${cframe_search_subdirs_OUTVAR} ${results}

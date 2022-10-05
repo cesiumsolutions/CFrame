@@ -34,8 +34,6 @@ function( cframe_load_projects )
   # ---------------------------------------------------------------------------
   # Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
   # ---------------------------------------------------------------------------
-
-  message("\n\n\n")
   cframe_search_subdirs(
       FILTER "^CMakeLists.txt$"
       DIRECTORIES ${CFRAME_PROJECT_AUTOLOAD_PATHS}
@@ -43,12 +41,16 @@ function( cframe_load_projects )
       RECURSE_MODE UNTIL_FOUND
       MAXRESULTS 0
   )
-  message("\nProject Paths: ${projectPaths}" )
-  message("\n\n\n")
 
   foreach( projectPath ${projectPaths} )
-    message( "Automatically adding Project: ${projectPath}" )
-    cframe_add_subdirectory( ${projectPath} )
+    get_filename_component( projectDir ${projectPath} DIRECTORY )
+    cframe_message(
+        MODE DEBUG
+        TAGS CFrame LoadProjects
+        VERBOSITY 4
+        MESSAGE "Automatically adding Project: ${projectDir}"
+    )
+    cframe_add_subdirectory( ${projectDir} )
   endforeach() # projectPaths
 
   # ---------------------------------------------------------------------------
@@ -62,7 +64,12 @@ function( cframe_load_projects )
     else()
       foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
         if ( IS_DIRECTORY ${searchPath}/${projectName} )
-          message( "Adding Project: ${searchPath}/${projectName}" )
+          cframe_message(
+              MODE DEBUG
+              TAGS CFrame LoadProjects
+              VERBOSITY 4
+              MESSAGE "Adding Project: ${searchPath}/${projectName}"
+          )
           cframe_add_subdirectory( ${searchPath}/${projectName} )
         endif()
       endforeach()
