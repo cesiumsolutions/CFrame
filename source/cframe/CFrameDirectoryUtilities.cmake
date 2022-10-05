@@ -4,13 +4,13 @@
 #
 # -----------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # @brief Returns the relative path of all the files relative to specified
 # directory
 # @param directory [in] The directory to get relative path to
 # @param files [in] List of files to determine relative path
 # @return outVar
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 function( cframe_files_relative_paths outVar directory files )
 
   foreach( file ${files} )
@@ -21,9 +21,9 @@ function( cframe_files_relative_paths outVar directory files )
   set( ${outVar} ${relPaths} PARENT_SCOPE )
 endfunction() # cframe_files_relative_paths
 
-#
-#
-#
+# -----------------------------------------------------------------------------
+# Implementation part for cframe_search_subdirs
+# -----------------------------------------------------------------------------
 function( cframe_search_subdir_impl dir filename recursive stopWhenFound outVar )
 
   ##message( "cframe_search_subdir_impl: ${dir} ${filename} ${recursive} ${stopWhenFound} ${outVar}" )
@@ -61,7 +61,7 @@ function( cframe_search_subdir_impl dir filename recursive stopWhenFound outVar 
 
 endfunction() # cframe_search_subdir_impl
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # @brief Searches subdirectories for given file returning list of paths containing
 #        file.
 # Options:
@@ -86,7 +86,7 @@ endfunction() # cframe_search_subdir_impl
 #     OUTVAR paths
 # )
 # @endcode
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 function( cframe_search_subdirs )
 
   ##message( "cframe_search_subdirs" )
@@ -177,7 +177,7 @@ function( cframe_search_subdirs )
 
 endfunction() # cframe_search_subdirs
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # @brief Traverses all of the files in specified directories, and for each file
 #        passing the specified filter, executes the specified predicate.
 #
@@ -209,7 +209,7 @@ endfunction() # cframe_search_subdirs
 #     RECURSIVE TRUE
 # )
 # @endcode
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 function( cframe_traverse_directories )
 
   # Assign default values to parameters
@@ -304,7 +304,7 @@ function( cframe_traverse_directories )
 
 endfunction() # cframe_traverse_directories
 
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Determines if subDir is a subdirectory of current source directory in which
 # case we can directly call add_subdirectory.
 # Otherwise, use the leaf directory as the binary directory.
@@ -312,7 +312,7 @@ endfunction() # cframe_traverse_directories
 # @param subDir [in] The subdirectory to add, can be absolute or relative
 # @todo Would be nice to use the partial path under the AUTOLOAD_PATHS
 # as the binary directory.
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 function( cframe_add_subdirectory subDir )
 
   file( RELATIVE_PATH relPath ${CMAKE_CURRENT_SOURCE_DIR} ${subDir} )
