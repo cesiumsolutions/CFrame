@@ -41,7 +41,7 @@ function( cframe_load_projects )
       ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
       OUTVAR projectPaths
       RECURSIVE ON
-      MAXRESULTS 0
+      MAXRESULTS 3
   )
   message("\nProject Paths: ${projectPaths}" )
   message("\n\n\n")
