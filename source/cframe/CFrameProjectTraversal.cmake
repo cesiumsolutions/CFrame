@@ -35,7 +35,7 @@ function( cframe_load_projects )
   # Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
   # ---------------------------------------------------------------------------
   cframe_search_subdirs(
-      FILENAME CMakeLists.txt
+      FILTER CMakeLists.txt
       ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
       OUTVAR projectPaths
       RECURSIVE OFF

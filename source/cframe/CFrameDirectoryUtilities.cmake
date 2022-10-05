@@ -24,11 +24,15 @@ endfunction() # cframe_files_relative_paths
 # -----------------------------------------------------------------------------
 # Implementation part for cframe_search_subdirs
 # -----------------------------------------------------------------------------
-function( cframe_search_subdir_impl dir filename recursive stopWhenFound outVar )
+function( cframe_search_subdir_impl dir filter recursive stopWhenFound outVar )
 
-  ##message( "cframe_search_subdir_impl: ${dir} ${filename} ${recursive} ${stopWhenFound} ${outVar}" )
+  ##message( "cframe_search_subdir_impl: ${dir} ${filter} ${recursive} ${stopWhenFound} ${outVar}" )
 
-  if ( EXISTS ${dir}/${filename} )
+  string( REGEX MATCH "[a-fA-F]*.cmake" matchOut ${filter} )
+  message( "Match: ${filter} = ${matchOut}" )
+
+
+  if ( EXISTS ${dir}/${filter} )
     list( APPEND results ${dir} )
     if ( ${stopWhenFound} )
       set( ${outVar} ${results} PARENT_SCOPE )
@@ -50,7 +54,7 @@ function( cframe_search_subdir_impl dir filename recursive stopWhenFound outVar 
   foreach( child ${children} )
     if ( IS_DIRECTORY ${dir}/${child} )
       cframe_search_subdir_impl(
-          ${dir}/${child} ${filename}
+          ${dir}/${child} ${filter}
           ${recursive} ${stopWhenFound}
           results
       )
@@ -69,7 +73,7 @@ endfunction() # cframe_search_subdir_impl
 # @param STOPWHENFOUND [in] True if search terminates after first file is found
 #                          (default: FALSE)
 # Single value args:
-# @param FILENAME [in] The name of the file to search for
+# @param FILTER [in] The regex filter to apply to the filename.
 # @param OUTVAR [out] The name of the variable to store the results in
 # @param VERBOSITY [in] The verbosity level to use for messages (default: 1)
 # Multivalue args:
@@ -78,7 +82,7 @@ endfunction() # cframe_search_subdir_impl
 # For example:
 # @code
 # cframe_search_subdirs(
-#     FILENAME CMakeLists.txt
+#     FILTER "[a-zA-Z0-9]*.txt"
 #     ROOTDIRS
 #         projects
 #         special/subprojA
@@ -102,7 +106,7 @@ function( cframe_search_subdirs )
       STOPWHENFOUND
   )
   set( oneValueArgs
-      FILENAME
+      FILTER
       OUTVAR
       VERBOSITY
   )
@@ -133,14 +137,14 @@ function( cframe_search_subdirs )
     )
   endif()
 
-  if ( DEFINED cframe_search_subdirs_FILENAME )
-    set( filename ${cframe_search_subdirs_FILENAME} )
+  if ( DEFINED cframe_search_subdirs_FILTER )
+    set( filter ${cframe_search_subdirs_FILTER} )
   else()
     cframe_message(
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_search_dirs() FILENAME not specified, aborting"
+        MESSAGE "cframe_search_dirs() FILTER not specified, aborting"
     )
   endif()
 
@@ -160,14 +164,14 @@ function( cframe_search_subdirs )
     set( stopWhenFound TRUE )
   endif()
 
-  ##message( "filename: ${filename}" )
+  ##message( "filter: ${filter}" )
   ##message( "recursive: ${recursive}" )
   ##message( "stopWhenFound: ${stopWhenFound}" )
   ##message( "rootDirs: ${rootDirs}" )
 
   foreach( dir ${cframe_search_subdirs_ROOTDIRS} )
     cframe_search_subdir_impl(
-        "${dir}" "${filename}"
+        "${dir}" "${filter}"
         "${recursive}" "${stopWhenFound}"
         results
     )
@@ -296,7 +300,7 @@ function( cframe_traverse_directories )
 
 ##  foreach( dir ${cframe_search_subdirs_ROOTDIRS} )
 ##    cframe_search_subdir_impl(
-##        "${dir}" "${filename}"
+##        "${dir}" "${filter}"
 ##        "${recursive}" "${stopWhenFound}"
 ##        results
 ##    )
