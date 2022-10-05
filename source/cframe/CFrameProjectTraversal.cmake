@@ -34,13 +34,17 @@ function( cframe_load_projects )
   # ---------------------------------------------------------------------------
   # Autoload projects found in CFRAME_PROJECT_AUTOLOAD_PATHS.
   # ---------------------------------------------------------------------------
+
+  message("\n\n\n")
   cframe_search_subdirs(
-      FILTER CMakeLists.txt
+      FILTER "^CMakeLists.txt$"
       ROOTDIRS ${CFRAME_PROJECT_AUTOLOAD_PATHS}
       OUTVAR projectPaths
-      RECURSIVE OFF
-      STOPWHENFOUND TRUE
+      RECURSIVE ON
+      MAXRESULTS 0
   )
+  message("\nProject Paths: ${projectPaths}" )
+  message("\n\n\n")
 
   foreach( projectPath ${projectPaths} )
     message( "Automatically adding Project: ${projectPath}" )
