@@ -12,7 +12,9 @@
 # @ref https://stackoverflow.com/questions/41416167/cmake-how-should-i-remove-duplicates-in-a-space-separated-list
 # -----------------------------------------------------------------------------
 function( cframe_list_join LIST GLUE OUTPUT )
-  cframe_message( STATUS 4 "CFrame: FUNCTION: cframe_list_join" )
+  cframe_message( MODE STATUS VERBOSITY 4
+      "CFrame: FUNCTION: cframe_list_join"
+  )
   string( REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${LIST}" )
   string( REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}" ) #fixes escaping
   set( ${OUTPUT} "${_TMP_STR}" PARENT_SCOPE )
@@ -35,7 +37,9 @@ endfunction()
 # -----------------------------------------------------------------------------
 function( cframe_merge_list_strings STRING1 STRING2 REMOVE_DUPLICATES SORT RESULT )
 
-  cframe_message( STATUS 4 "CFrame: FUNCTION: cframe_merge_list_strings" )
+  cframe_message( MODE STATUS VERBOSITY 4
+      "CFrame: FUNCTION: cframe_merge_list_strings"
+  )
 
   # Just append the strings with a space between them
   set( LIST "${STRING1} ${STRING2}" )
@@ -59,7 +63,9 @@ endfunction()
 # @ref https://stackoverflow.com/questions/41416167/cmake-how-should-i-remove-duplicates-in-a-space-separated-list
 # -----------------------------------------------------------------------------
 function( cframe_list_remove_duplicates LIST_STR LIST_OUTPUT )
-  cframe_message( STATUS 4 "CFrame: FUNCTION: cframe_list_remove_duplicates" )
+  cframe_message( MODE STATUS VERBOSITY 4
+      "CFrame: FUNCTION: cframe_list_remove_duplicates"
+  )
   set( LIST_INPUT ${LIST_STR} )
   separate_arguments( LIST_INPUT )
   list( REMOVE_DUPLICATES LIST_INPUT )

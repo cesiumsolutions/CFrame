@@ -15,7 +15,9 @@
 # -----------------------------------------------------------------------------
 function( cframe_use_external_package )
 
-  cframe_message( STATUS 3 "CFrame: FUNCTION: cframe_use_external_package" )
+  cframe_message( MODE STATUS VERBOSITY 3
+      "CFrame: FUNCTION: cframe_use_external_package"
+  )
 
   # Parse arguments
   set( options )
@@ -30,14 +32,14 @@ function( cframe_use_external_package )
   )
   set( PACKAGE ${cframe_use_external_package_PACKAGE} )
   set( COMPONENT_LIST_STRING ${cframe_use_external_package_COMPONENTS} )
-  cframe_message( STATUS 2
+  cframe_message( MODE STATUS VERBOSITY 2
       "CFrame: Using external package: ${PACKAGE} with components: ${COMPONENT_LIST_STRING}"
   )
 
-  cframe_message( STATUS 3
+  cframe_message( MODE STATUS VERBOSITY 3
       "CFrame: Original external package list: ${CFRAME_EXTERNAL_PACKAGES}"
   )
-  cframe_message( STATUS 3
+  cframe_message( MODE STATUS VERBOSITY 3
       "CFrame: Original components for ${PACKAGE}: ${CFRAME_EXTERNAL_${PACKAGE}_COMPONENTS}"
   )
 
@@ -49,7 +51,7 @@ function( cframe_use_external_package )
       PACKAGE_LIST_UPDATED
   )
   set( CFRAME_EXTERNAL_PACKAGES "${PACKAGE_LIST_UPDATED}" CACHE INTERNAL "" )
-  cframe_message( STATUS 3
+  cframe_message(  MODE STATUS VERBOSITY 3
       "CFrame: Updated package list: ${CFRAME_EXTERNAL_PACKAGES}"
   )
 
@@ -61,7 +63,7 @@ function( cframe_use_external_package )
       COMPONENT_LIST_UPDATED
   )
   set( CFRAME_EXTERNAL_${PACKAGE}_COMPONENTS "${COMPONENT_LIST_UPDATED}" CACHE INTERNAL "" )
-  cframe_message( STATUS 3
+  cframe_message( MODE STATUS VERBOSITY 3
       "CFrame: Updated components for ${PACKAGE}: ${CFRAME_EXTERNAL_${PACKAGE}_COMPONENTS}"
   )
 
@@ -75,21 +77,39 @@ endfunction() # cframe_use_external_package
 # -----------------------------------------------------------------------------
 macro( cframe_setup_external_package PACKAGE COMPONENTS )
 
-  cframe_message( STATUS 3 "CFrame: MACRO: cframe_setup_package" )
-  cframe_message( STATUS 4 "CFrame: Package: ${PACKAGE}" )
-  cframe_message( STATUS 4 "CFrame: Components: ${COMPONENTS}" )
+  cframe_message( MODE STATUS VERBOSITY 3
+      "CFrame: MACRO: cframe_setup_package"
+  )
+  cframe_message( MODE STATUS VERBOSITY 4
+      "CFrame: Package: ${PACKAGE}"
+  )
+  cframe_message( MODE STATUS VERBOSITY 4
+      "CFrame: Components: ${COMPONENTS}"
+  )
 
   find_package( ${PACKAGE} REQUIRED ${COMPONENTS} )
   string( TOUPPER ${PACKAGE} UPACKAGE )
 
   if ( ${${UPACKAGE}_FOUND} )
 
-    cframe_message( STATUS 3 "CFrame: Successfully found package ${PACKAGE}" )
-    cframe_message( STATUS 4 "CFrame: ${PACKAGE} Version:      ${${UPACKAGE}_VERSION}" )
-    cframe_message( STATUS 4 "CFrame: ${PACKAGE} Definitions:  ${${UPACKAGE}_DEFINITIONS}" )
-    cframe_message( STATUS 4 "CFrame: ${PACKAGE} Include Dirs: ${${UPACKAGE}_INCLUDE_DIRS}" )
-    cframe_message( STATUS 4 "CFrame: ${PACKAGE} Library Dirs: ${${UPACKAGE}_LIBRARY_DIRS}" )
-    cframe_message( STATUS 4 "CFrame: ${PACKAGE} Libraries:    ${${UPACKAGE}_LIBRARIES}" )
+    cframe_message( MODE STATUS VERBOSITY 3
+        "CFrame: Successfully found package ${PACKAGE}"
+    )
+    cframe_message( MODE STATUS VERBOSITY 4
+        "CFrame: ${PACKAGE} Version:      ${${UPACKAGE}_VERSION}"
+    )
+    cframe_message( MODE STATUS VERBOSITY 4
+        "CFrame: ${PACKAGE} Definitions:  ${${UPACKAGE}_DEFINITIONS}"
+    )
+    cframe_message( MODE STATUS VERBOSITY 4
+        "CFrame: ${PACKAGE} Include Dirs: ${${UPACKAGE}_INCLUDE_DIRS}"
+    )
+    cframe_message( MODE STATUS VERBOSITY 4
+        "CFrame: ${PACKAGE} Library Dirs: ${${UPACKAGE}_LIBRARY_DIRS}"
+    )
+    cframe_message( MODE STATUS VERBOSITY 4
+        "CFrame: ${PACKAGE} Libraries:    ${${UPACKAGE}_LIBRARIES}"
+    )
 
     add_definitions( ${${UPACKAGE}_DEFINITIONS} )
     include_directories( ${${UPACKAGE}_INCLUDE_DIRS} )
@@ -97,7 +117,9 @@ macro( cframe_setup_external_package PACKAGE COMPONENTS )
 
   else()
 
-    cframe_message( SEND_ERROR 1 "CFrame: Could not default setup package ${PACKAGE}" )
+    cframe_message( MODE SEND_ERROR VERBOSITY 1
+        "CFrame: Could not default setup package ${PACKAGE}"
+    )
 
   endif()
 

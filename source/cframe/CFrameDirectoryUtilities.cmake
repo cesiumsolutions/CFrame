@@ -153,7 +153,7 @@ function( cframe_search_subdirs )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_search_dirs() DIRECTORIES not specified, aborting"
+        "cframe_search_dirs() DIRECTORIES not specified, aborting"
     )
   endif()
 
@@ -164,7 +164,7 @@ function( cframe_search_subdirs )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_search_dirs() FILTER not specified, aborting"
+        "cframe_search_dirs() FILTER not specified, aborting"
     )
   endif()
 
@@ -173,7 +173,7 @@ function( cframe_search_subdirs )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_search_dirs() OUTVAR not specified, aborting"
+        "cframe_search_dirs() OUTVAR not specified, aborting"
     )
   endif()
 
@@ -189,8 +189,7 @@ function( cframe_search_subdirs )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE
-            "cframe_search_dirs(): Invalid RECURSE_MODE [${recurseMode}], aborting"
+        "cframe_search_dirs(): Invalid RECURSE_MODE [${recurseMode}], aborting"
     )    
   endif()
   
@@ -296,7 +295,7 @@ function( cframe_traverse_directories )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_traverse_directories() FILTER not specified, aborting"
+        "cframe_traverse_directories() FILTER not specified, aborting"
     )
   endif()
 
@@ -307,7 +306,7 @@ function( cframe_traverse_directories )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_traverse_directories() PREDICATE not specified, aborting"
+        "cframe_traverse_directories() PREDICATE not specified, aborting"
     )
   endif()
 
@@ -318,7 +317,7 @@ function( cframe_traverse_directories )
         MODE FATAL_ERROR
         TAGS CFrame DirectoryUtils
         VERBOSITY ${verbosity}
-        MESSAGE "cframe_traverse_directories() DIRECTORIES not specified, aborting"
+        "cframe_traverse_directories() DIRECTORIES not specified, aborting"
     )
   endif()
 

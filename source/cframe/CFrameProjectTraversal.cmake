@@ -45,10 +45,10 @@ function( cframe_load_projects )
   foreach( projectPath ${projectPaths} )
     get_filename_component( projectDir ${projectPath} DIRECTORY )
     cframe_message(
-        MODE DEBUG
+        MODE STATUS
         TAGS CFrame LoadProjects
-        VERBOSITY 4
-        MESSAGE "Automatically adding Project: ${projectDir}"
+        VERBOSITY 2
+        "Automatically adding Project: ${projectDir}"
     )
     cframe_add_subdirectory( ${projectDir} )
   endforeach() # projectPaths
@@ -59,23 +59,37 @@ function( cframe_load_projects )
 
   foreach( projectName ${CFRAME_PROJECTS} )
 
-    if ( IS_DIRECTORY ${projectName} )
-      cframe_add_subdirectory( ${projectName} )
+    set( projectFound FALSE )
+
+    #if ( EXISTS ${projectName} )
+    #  add_subdirectory( ${projectName} )
+    if( IS_DIRECTORY ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
+      cframe_add_subdirectory( ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
     else()
       foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
         if ( IS_DIRECTORY ${searchPath}/${projectName} )
           cframe_message(
-              MODE DEBUG
+              MODE STATUS
               TAGS CFrame LoadProjects
-              VERBOSITY 4
-              MESSAGE "Adding Project: ${searchPath}/${projectName}"
+              VERBOSITY 2
+              "Adding Project: ${searchPath}/${projectName}"
           )
           cframe_add_subdirectory( ${searchPath}/${projectName} )
+
+          set( projectFound TRUE )
         endif()
       endforeach()
 
     endif()
 
+    if ( NOT "${projectFound}" )
+      cframe_message(
+          MODE FATAL_ERROR
+          TAGS CFrame LoadProjects
+          VERBOSITY 0
+          "Project: ${projectName} not resolvable, aborting..."
+      )
+    endif()
 
   endforeach() # CFRAME_PROJECTS
 

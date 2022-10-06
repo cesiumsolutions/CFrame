@@ -30,10 +30,10 @@ function( cframe_load_modules )
   foreach( moduleDir ${CFRAME_MODULE_AUTOLOAD_PATHS} )
 
     cframe_message(
-        MODE DEBUG
+        MODE STATUS
         TAGS CFrame LoadModules
-        VERBOSITY 1
-        MESSAGE "Scanning Module Directory: ${moduleDir}"
+        VERBOSITY 2
+        "Scanning Module Directory: ${moduleDir}"
     )
 
     file(
@@ -47,10 +47,10 @@ function( cframe_load_modules )
         get_filename_component( ext ${child} EXT )
         if ( ${ext} STREQUAL ".cmake" )
           cframe_message(
-              MODE DEBUG
+              MODE STATUS
               TAGS CFrame LoadModules
-              VERBOSITY 1
-              MESSAGE "Automatically loading module: ${moduleDir}/${child}"
+              VERBOSITY 2
+              "Automatically loading module: ${moduleDir}/${child}"
           )
           include( ${moduleDir}/${child} )
         endif()
@@ -65,10 +65,10 @@ function( cframe_load_modules )
 
   foreach( module ${CFRAME_MODULES} )
     cframe_message(
-        MODE DEBUG
+        MODE STATUS
         TAGS CFrame LoadModules
         VERBOSITY 4
-        MESSAGE "Loading module: ${module}"
+        "Loading module: ${module}"
     )
     include( module )
   endforeach() # CFRAME_MODULES

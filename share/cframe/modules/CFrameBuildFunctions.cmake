@@ -65,7 +65,9 @@ option( BUILD_SHARED_LIBS "Toggle whether to build Shared Libraries" ON )
 # -----------------------------------------------------------------------------
 function( cframe_build_target )
 
-  cframe_message( STATUS 3 "CFrame: FUNCTION: cframe_build_target")
+  cframe_message( MODE STATUS VERBOSITY 3
+      "CFrame: FUNCTION: cframe_build_target"
+  )
 
   # -----------------------------------
   # Set up and parse multiple arguments
@@ -109,31 +111,31 @@ function( cframe_build_target )
       ${ARGN}
   )
 
-  cframe_message( STATUS 4 "Parameters for cframe_build_target:" )
-  cframe_message( STATUS 4 "TARGET_NAME:         ${cframe_build_target_TARGET_NAME}" )
-  cframe_message( STATUS 4 "OUTPUT_NAME:         ${cframe_build_target_OUTPUT_NAME}" )
-  cframe_message( STATUS 4 "PROJECT_LABEL:       ${cframe_build_target_PROJECT_LABEL}" )
-  cframe_message( STATUS 4 "TYPE:                ${cframe_build_target_TYPE}" )
-  cframe_message( STATUS 4 "LINK_TYPE:           ${cframe_build_target_LINK_TYPE}" )
-  cframe_message( STATUS 4 "GROUP:               ${cframe_build_target_GROUP}" )
-  cframe_message( STATUS 4 "INCLUDE_DIRS:        ${cframe_build_target_INCLUDE_DIRS}" )
-  cframe_message( STATUS 4 "DEFINES:             ${cframe_build_target_DEFINES}" )
-  cframe_message( STATUS 4 "COMPILE_FLAGS:       ${cframe_build_target_COMPILE_FLAGS}" )
-  cframe_message( STATUS 4 "LINK_FLAGS:          ${cframe_build_target_LINK_FLAGS}" )
-  cframe_message( STATUS 4 "LIBRARY_DIRS:        ${cframe_build_target_LIBRARY_DIRS}" )
-  cframe_message( STATUS 4 "LIBRARIES:           ${cframe_build_target_LIBRARIES}" )
-  cframe_message( STATUS 4 "HEADERS_PUBLIC:      ${cframe_build_target_HEADERS_PUBLIC}" )
-  cframe_message( STATUS 4 "HEADERS_PRIVATE:     ${cframe_build_target_HEADERS_PRIVATE}" )
-  cframe_message( STATUS 4 "FILES_PUBLIC:        ${cframe_build_target_FILES_PUBLIC}" )
-  cframe_message( STATUS 4 "FILES_PRIVATE:       ${cframe_build_target_FILES_PRIVATE}" )
-  cframe_message( STATUS 4 "SOURCES:             ${cframe_build_target_SOURCES}" )
-  cframe_message( STATUS 4 "QT_MOCFILES:         ${cframe_build_target_QT_MOCFILES}" )
-  cframe_message( STATUS 4 "QT_UIFILES:          ${cframe_build_target_QT_UIFILES}" )
-  cframe_message( STATUS 4 "QT_QRCFILES:         ${cframe_build_target_QT_QRCFILES}" )
-  cframe_message( STATUS 4 "NO_INSTALL:          ${cframe_build_target_NO_INSTALL}" )
-  cframe_message( STATUS 4 "HEADERS_INSTALL_DIR: ${cframe_build_target_HEADERS_INSTALL_DIR}" )
-  cframe_message( STATUS 4 "FILES_INSTALL_DIR:   ${cframe_build_target_FILES_INSTALL_DIR}" )
-  cframe_message( STATUS 4 "BINARY_INSTALL_DIR:  ${cframe_build_target_BINARY_INSTALL_DIR}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "Parameters for cframe_build_target:" )
+  cframe_message( MODE STATUS VERBOSITY 4 "TARGET_NAME:         ${cframe_build_target_TARGET_NAME}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "OUTPUT_NAME:         ${cframe_build_target_OUTPUT_NAME}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "PROJECT_LABEL:       ${cframe_build_target_PROJECT_LABEL}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "TYPE:                ${cframe_build_target_TYPE}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "LINK_TYPE:           ${cframe_build_target_LINK_TYPE}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "GROUP:               ${cframe_build_target_GROUP}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "INCLUDE_DIRS:        ${cframe_build_target_INCLUDE_DIRS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "DEFINES:             ${cframe_build_target_DEFINES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_FLAGS:       ${cframe_build_target_COMPILE_FLAGS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "LINK_FLAGS:          ${cframe_build_target_LINK_FLAGS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "LIBRARY_DIRS:        ${cframe_build_target_LIBRARY_DIRS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "LIBRARIES:           ${cframe_build_target_LIBRARIES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_PUBLIC:      ${cframe_build_target_HEADERS_PUBLIC}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_PRIVATE:     ${cframe_build_target_HEADERS_PRIVATE}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "FILES_PUBLIC:        ${cframe_build_target_FILES_PUBLIC}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "FILES_PRIVATE:       ${cframe_build_target_FILES_PRIVATE}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "SOURCES:             ${cframe_build_target_SOURCES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "QT_MOCFILES:         ${cframe_build_target_QT_MOCFILES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "QT_UIFILES:          ${cframe_build_target_QT_UIFILES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "QT_QRCFILES:         ${cframe_build_target_QT_QRCFILES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "NO_INSTALL:          ${cframe_build_target_NO_INSTALL}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_INSTALL_DIR: ${cframe_build_target_HEADERS_INSTALL_DIR}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "FILES_INSTALL_DIR:   ${cframe_build_target_FILES_INSTALL_DIR}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "BINARY_INSTALL_DIR:  ${cframe_build_target_BINARY_INSTALL_DIR}" )
 
   # ------------------------------------
   # Preliminary Build checks and filters
@@ -146,15 +148,21 @@ function( cframe_build_target )
 
   # Apply filtering toggles at the Project level
   if ( NOT DEFINED cframe_build_target_TARGET_NAME )
-    cframe_message( WARNING 1 "CFrame: cframe_build_target no TARGET_NAME parameter specified" )
+    cframe_message( MODE WARNING VERBOSITY 1
+        "CFrame: cframe_build_target no TARGET_NAME parameter specified"
+    )
     return()
   else()
     option( BUILD_TARGET_${cframe_build_target_TARGET_NAME} "Set ON to build target ${cframe_build_target_TARGET_NAME}." ON )
     if ( BUILD_TARGET_${cframe_build_target_TARGET_NAME} MATCHES OFF )
-      cframe_message( STATUS 3 "CFrame: Skipping target: ${cframe_build_target_TARGET_NAME}" )
+      cframe_message( MODE STATUS VERBOSITY 3
+          "CFrame: Skipping target: ${cframe_build_target_TARGET_NAME}"
+      )
       return()
     else()
-      cframe_message( STATUS 4 "CFrame: Building target: ${cframe_build_target_TARGET_NAME}" )
+      cframe_message( MODE STATUS VERBOSITY 4
+          "CFrame: Building target: ${cframe_build_target_TARGET_NAME}"
+      )
     endif()
   endif()
 
@@ -162,24 +170,30 @@ function( cframe_build_target )
   if ( DEFINED cframe_build_target_GROUP )
     option( BUILD_GROUP_${cframe_build_target_GROUP} "Set ON to build group ${cframe_build_target_GROUP}." ON )
     if ( BUILD_GROUP_${cframe_build_target_GROUP} MATCHES OFF )
-      cframe_message( STATUS 3 "CFrame: Skipping group: ${cframe_build_target_GROUP}" )
+      cframe_message( MODE STATUS VERBOSITY 3
+          "CFrame: Skipping group: ${cframe_build_target_GROUP}"
+      )
       return()
     else()
-      cframe_message( STATUS 4 "CFrame: Building group: ${cframe_build_target_GROUP}" )
+      cframe_message( MODE STATUS VERBOSITY 4
+          "CFrame: Building group: ${cframe_build_target_GROUP}"
+      )
     endif()
   endif()
 
   # Check for valid Type
   string( TOUPPER ${cframe_build_target_TYPE} cframe_build_target_TYPE )
   if ( NOT DEFINED cframe_build_target_TYPE )
-    cframe_message( WARNING 1 "CFrame: cframe_build_target no TYPE parameter specified" )
+    cframe_message( MODE WARNING VERBOSITY 1
+        "CFrame: cframe_build_target no TYPE parameter specified"
+    )
     return()
   elseif ( NOT ( (${cframe_build_target_TYPE} STREQUAL "LIBRARY") OR
                  (${cframe_build_target_TYPE} STREQUAL "INTERFACE") OR
                  (${cframe_build_target_TYPE} STREQUAL "EXECUTABLE") OR
 ##                 (${cframe_build_target_TYPE} STREQUAL "TEST") OR
                  (${cframe_build_target_TYPE} STREQUAL "CUSTOM") ) )
-    cframe_message( FATAL_ERROR 0
+    cframe_message( MODE FATAL_ERROR VERBOSITY 0
         "CFrame: cframe_build_target invalid type: ${cframe_build_target_TYPE}"
     )
     return()
@@ -243,7 +257,7 @@ function( cframe_build_target )
     )
 
     if ( cframe_build_target_DEBUG )
-      cframe_message( STATUS 3
+      cframe_message( MODE STATUS VERBOSITY 3
           "CFrame: ${cframe_build_target_TARGET_NAME} Generated MOC Files: "
           "${${cframe_build_target_TARGET_NAME}_MOCSOURCES}"
       )
@@ -275,7 +289,7 @@ function( cframe_build_target )
         ${${cframe_build_target_TARGET_NAME}_UISOURCES}
     )
 
-    cframe_message( STATUS 3
+    cframe_message( MODE STATUS VERBOSITY 3
         "CFrame: ${cframe_build_target_TARGET_NAME} Generated UI Files: "
         "${${cframe_build_target_TARGET_NAME}_UIHEADERS}"
         "${${cframe_build_target_TARGET_NAME}_UISOURCES}"
@@ -305,7 +319,7 @@ function( cframe_build_target )
         ${${cframe_build_target_TARGET_NAME}_RESOURCES}
     )
 
-    cframe_message( STATUS 3
+    cframe_message( MODE STATUS VERBOSITY 3
         "${cframe_build_target_TARGET_NAME} Generated Qt Resource Files: "
         "${${cframe_build_target_TARGET_NAME}_RESOURCES}"
     )
@@ -379,7 +393,7 @@ function( cframe_build_target )
   if ( ("${${cframe_build_target_TARGET_NAME}_ALL_SOURCES}" STREQUAL "") AND
        ("${cframe_build_target_TYPE}" STREQUAL "LIBRARY") )
     set( cframe_build_target_TYPE "INTERFACE" )
-    cframe_message( STATUS 1
+    cframe_message( MODE STATUS VERBOSITY 1
         "CFrame: Automatically setting target ${cframe_build_target_TARGET_NAME}
            as Custom type because no sources (neither specified nor generated) were
            found."
