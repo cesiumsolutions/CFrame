@@ -17,7 +17,7 @@
 # - 3: Debug messages
 # - 4: Low level debug messages
 # -----------------------------------------------------------------------------
-set( CFRAME_VERBOSITY 4
+set( CFRAME_VERBOSITY 2
     CACHE STRING
     "Verbosity level for CFrame messages: 0=off, 1=essential, higher=more"
 )
