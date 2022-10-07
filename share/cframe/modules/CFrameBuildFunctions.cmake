@@ -16,6 +16,56 @@ set_property(
 option( BUILD_SHARED_LIBS "Toggle whether to build Shared Libraries" ON )
 
 # -----------------------------------------------------------------------------
+# Forwards call to target_include_directories based on a list of directory
+# specifications that may include the keywords PUBLIC, PRIVATE, and INTERFACE.
+# Separates the list out based on these keywords and calls the lists to
+# target_include_directories accordingly.
+#
+# @param TARGET [in] Name of target to add include directories to.
+# @param INCLUDE_DIRS [in] List of directories to include with possible embedded
+#                          scope keywords PUBLIC, PRIVATE, INTERFACE.
+# @see cframe_build_target
+# -----------------------------------------------------------------------------
+function( cframe_target_include_directories TARGET INCLUDE_DIRS )
+
+  set( keyword PRIVATE )
+  set( includeDirs "" )
+
+  foreach( entry ${INCLUDE_DIRS} )
+
+    if ( (${entry} STREQUAL "PUBLIC") OR
+         (${entry} STREQUAL "PRIVATE") OR
+         (${entry} STREQUAL "INTERFACE") )
+      list( LENGTH includeDirs numDirs )
+      if ( ${numDirs} GREATER 0 )
+        cframe_message(
+            MODE STATUS VERBOSITY 3 TAGS CFrame BuildFunctions
+            "cframe_target_include_directories( ${TARGET} ${keyword} ${includeDirs}"
+        )
+        target_include_directories( ${TARGET} "${keyword}" "${includeDirs}" )
+      endif()
+
+      set( keyword ${entry} )
+      set( includeDirs "" )
+    else()
+      list( APPEND includeDirs ${entry} )
+    endif()
+
+  endforeach()
+
+  # Handle residual values
+  list( LENGTH includeDirs numDirs )
+  if ( ${numDirs} GREATER 0 )
+    cframe_message(
+        MODE STATUS VERBOSITY 3 TAGS CFrame BuildFunctions
+        "cframe_target_include_directories( ${TARGET} ${keyword} ${includeDirs}"
+    )
+    target_include_directories( ${TARGET} "${keyword}" "${includeDirs}" )
+  endif()
+
+endfunction() # cframe_target_include_directories
+
+# -----------------------------------------------------------------------------
 # Function to encapsulate the most common standard steps for building a target.
 #
 # Parameters:
@@ -232,8 +282,6 @@ function( cframe_build_target )
 ##  cframe_filter_list( _QT_MOCFILES     CFRAME_FILE_EXCLUDE_LIST )
 ##  cframe_filter_list( _QT_UIFILES      CFRAME_FILE_EXCLUDE_LIST )
 ##  cframe_filter_list( _QT5_QRCFILES    CFRAME_FILE_EXCLUDE_LIST )
-
-  include_directories( ${cframe_build_target_INCLUDE_DIRS} )
 
   if ( DEFINED cframe_build_target_DEFINES )
       add_definitions( ${cframe_build_target_DEFINES} )
@@ -541,13 +589,23 @@ function( cframe_build_target )
       target_link_libraries(
           ${cframe_build_target_TARGET_NAME} INTERFACE
           ${cframe_build_target_LIBRARIES}
-      )    
+      )
     else()
       target_link_libraries(
           ${cframe_build_target_TARGET_NAME}
           ${cframe_build_target_LIBRARIES}
       )
     endif()
+  endif()
+
+  # -----------------------
+  # Set include directories
+  # -----------------------
+  if ( DEFINED cframe_build_target_INCLUDE_DIRS )
+    cframe_target_include_directories(
+        ${cframe_build_target_TARGET_NAME}
+        "${cframe_build_target_INCLUDE_DIRS}"
+    )
   endif()
 
   # -----------------------------------
