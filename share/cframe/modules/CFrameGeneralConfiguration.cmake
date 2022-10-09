@@ -28,6 +28,7 @@ if ( WIN32 )
       "Version of Windows to build for"
   )
   add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
+  add_definitions( "-D_WIN32_WINNT=${CFRAME_WIN_VERSION}" )
 
   set( PLATFORM_FLAGS "/EHsc /bigobj" CACHE STRING "Platform specific compile flags" )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PLATFORM_FLAGS}" )
