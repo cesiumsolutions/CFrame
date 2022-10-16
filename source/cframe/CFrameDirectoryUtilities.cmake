@@ -365,3 +365,19 @@ function( cframe_add_subdirectory subDir )
   endif()
 
 endfunction() # cframe_add_subdirectory
+
+
+# -----------------------------------------------------------------------------
+# Add all subdirectories of specified directory if it contains a CMakeLists.txt
+# file
+# -----------------------------------------------------------------------------
+function( cframe_conditionally_add_subdirectories dir )
+
+  file( GLOB children RELATIVE ${dir} ${dir}/* )
+  foreach( child ${children} )
+    if ( IS_DIRECTORY ${dir}/${child} )
+      add_subdirectory( ${dir}/${child} )
+    endif()
+  endforeach()
+
+endfunction() # cframe_conditionally_add_subdirectories
