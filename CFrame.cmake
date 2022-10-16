@@ -66,6 +66,9 @@ include( CFrameMessage )
 include( CFrameListUtilities )
 include( CFrameDirectoryUtilities )
 
+# CFrame-specific low-level stuff
+include( CFrameIncludeCFrameSource )
+
 # Bootstrap Modules loading
 include( CFrameModuleTraversal )
 cframe_load_modules()
