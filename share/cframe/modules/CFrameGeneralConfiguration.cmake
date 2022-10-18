@@ -19,6 +19,13 @@ set( CMAKE_DEBUG_POSTFIX d CACHE STRING "Postfix for Debug targets" )
 set( CMAKE_CXX_STANDARD 14 CACHE STRING "Version of C++ to use" )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
+# For some reason, compiling with -g doesn't automatically define this standard macro
+if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+  add_definitions( -DDEBUG )
+else()
+  add_definitions( -DNDEBUG )
+endif()
+
 if ( WIN32 )
 
   # Set Windows version, used by socket libraries
