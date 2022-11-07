@@ -8,7 +8,7 @@
 #
 # Example toplevel CMakeLists.txt:
 # <code>
-# cmake_minimum_required( VERSION 3.20 )
+# cmake_minimum_required( VERSION 3.10 )
 # project( my-awesome-project )
 #
 # set( CFRAME_DIR "" CACHE PATH "Directory to CFrame" )
