@@ -448,7 +448,7 @@ function( cframe_build_target )
         ${cframe_build_target_FILES_PRIVATE}
     )
       get_filename_component( abs_path ${file} REALPATH )
-      file( RELATIVE_PATH rel_path ${PROJECT_SOURCE_DIR} ${abs_path} )
+      file( RELATIVE_PATH rel_path ${CMAKE_CURRENT_SOURCE_DIR} ${abs_path} )
       string( FIND ${rel_path} ".." result )
       if ( ${result} EQUAL -1 )
         list( APPEND display_files ${file} )
