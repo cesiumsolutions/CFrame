@@ -51,7 +51,8 @@
 get_filename_component(
     CFRAME_PARENT_PATH ${CMAKE_CURRENT_LIST_FILE} DIRECTORY
 )
-set(
+list(
+    APPEND
     CMAKE_MODULE_PATH
     ${CFRAME_PARENT_PATH}/source/cframe
     ${CFRAME_PARENT_PATH}/share/cframe/modules
