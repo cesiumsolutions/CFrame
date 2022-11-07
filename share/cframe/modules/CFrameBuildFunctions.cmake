@@ -28,40 +28,19 @@ option( BUILD_SHARED_LIBS "Toggle whether to build Shared Libraries" ON )
 # -----------------------------------------------------------------------------
 function( cframe_target_include_directories TARGET INCLUDE_DIRS )
 
-  set( keyword PRIVATE )
-  set( includeDirs "" )
+  set( scope PRIVATE )
 
   foreach( entry ${INCLUDE_DIRS} )
 
     if ( (${entry} STREQUAL "PUBLIC") OR
          (${entry} STREQUAL "PRIVATE") OR
          (${entry} STREQUAL "INTERFACE") )
-      list( LENGTH includeDirs numDirs )
-      if ( ${numDirs} GREATER 0 )
-        cframe_message(
-            MODE STATUS VERBOSITY 3 TAGS CFrame BuildFunctions
-            "cframe_target_include_directories( ${TARGET} ${keyword} ${includeDirs}"
-        )
-        target_include_directories( ${TARGET} "${keyword}" "${includeDirs}" )
-      endif()
-
-      set( keyword ${entry} )
-      set( includeDirs "" )
+      set( scope ${entry} )
     else()
-      list( APPEND includeDirs ${entry} )
+      target_include_directories( ${TARGET} "${scope}" "${entry}" )
     endif()
 
   endforeach()
-
-  # Handle residual values
-  list( LENGTH includeDirs numDirs )
-  if ( ${numDirs} GREATER 0 )
-    cframe_message(
-        MODE STATUS VERBOSITY 3 TAGS CFrame BuildFunctions
-        "cframe_target_include_directories( ${TARGET} ${keyword} ${includeDirs}"
-    )
-    target_include_directories( ${TARGET} "${keyword}" "${includeDirs}" )
-  endif()
 
 endfunction() # cframe_target_include_directories
 
