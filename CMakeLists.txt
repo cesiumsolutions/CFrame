@@ -1,4 +1,9 @@
+# -*-cmake-*- CFrame - Copyright (C) @COPYRIGHT_YEAR_START@-@COPYRIGHT_YEAR_END@ Cesium Solutions
+# This file is subject to the terms and conditions defined in the file
+# 'CFRAME_LICENSE.txt', which is part of this source code package.
+#
 # -----------------------------------------------------------------------------
+#
 # @file Top-level CMakeLists file that can be used in lieu of making a custom
 # top-level CMakeLists for a project.
 #
@@ -13,12 +18,12 @@
 # environments.
 #
 # To use, just specify the the containing directory of this file as the source
-# directory to use for CMake. Then set at least one of the following variables
+# directory to use for CMake. Then set a combination of the following variables
 # to load your sub-projects (either in cmake-gui or on the command line/script).
 #
 # - CFRAME_AUTOLOAD_PATHS:
 #       List of directory paths to automatically load sub-projects. Directories
-#       will be recusrively searched until a CMakeLists.txt file is found. That
+#       will be recursively searched until a CMakeLists.txt file is found. That
 #       directory will then be added using add_subdirectory().
 #
 # - CFRAME_PROJECT_SEARCH_PATHS:
