@@ -333,7 +333,7 @@ function( cframe_traverse_directories )
   message( "Params:      ${params}" )
   message( "Recursive:   ${recursive}" )
 
-##  foreach( dir ${cframe_search_subdirs_DIRECTORIES} )
+##  foreach( dir ${ARGS_DIRECTORIES} )
 ##    cframe_search_subdir_impl(
 ##        "${dir}" "${filter}"
 ##        "${recursive}" "${stopWhenFound}"
@@ -342,6 +342,23 @@ function( cframe_traverse_directories )
 ##  endforeach()
 
 endfunction() # cframe_traverse_directories
+
+# -----------------------------------------------------------------------------
+# Determines if entry is in any of the directories specified by paths.
+# Returns value in outVar or sets it to empty if not found.
+# -----------------------------------------------------------------------------
+function( cframe_search_paths entry paths outVar )
+
+  foreach( path ${paths} )
+    if ( EXISTS ${path}/${entry} )
+      set( ${outVar} ${path}/${entry} PARENT_SCOPE )
+      return()
+    endif()
+  endforeach()
+
+  set( outVar "" PARENT_SCOPE )
+
+endfunction() # cframe_search_paths
 
 # -----------------------------------------------------------------------------
 # Determines if subDir is a subdirectory of current source directory in which
