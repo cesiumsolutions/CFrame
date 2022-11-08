@@ -15,16 +15,21 @@ if ( WIN32 )
   endif()
 
   if ( NOT OSG_DIR )
-    if ( CFRAME_EXTERN_DIR )
-      set( OSG_DIR ${CFRAME_EXTERN_DIR}/OpenSceneGraph-${OSG_VERSION}
-           CACHE PATH "OpenSceneGraph root directory" PARENT )
-    elseif ( NOT WIN32 )
-      set( OSG_DIR /usr
-           CACHE PATH "OpenSceneGraph root directory" PARENT )
-    else()
-      message( FATAL_ERROR "Neither OSG_DIR nor CFRAME_EXTERN_DIR are set, set one of these appropriately." )
+
+    cframe_search_paths(
+        OpenSceneGraph-${OSG_VERSION}
+        "${CFRAME_EXTERN_SEARCH_PATHS}"
+        OSG_DIR
+    )
+
+    if ( "${OSG_DIR}" STREQUAL "" )
+      message(
+          FATAL_ERROR
+          "OSG not found, set OSG_DIR or CFRAME_EXTERN_SEARCH_PATHS"
+      )
       return()
     endif()
+
   endif()
 
   find_package( OpenSceneGraph ${OSG_VERSION} REQUIRED
@@ -36,8 +41,6 @@ if ( WIN32 )
                 osgUtil
                 osgViewer
   )
-
-  set( IGS_RUNTIME_DIRS ${IGS_RUNTIME_DIRS} $ENV{OSG_DIR}/bin CACHE INTERNAL "" )
 
 else()
 

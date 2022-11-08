@@ -26,14 +26,19 @@ if ( WIN32 )
   endif()
 
   if ( (NOT BOOST_ROOT) AND ((NOT BOOST_LIBRARYDIR) OR (NOT BOOST_INCLUDEDIR)) )
-    if ( CFRAME_EXTERN_DIR )
-      set( BOOST_ROOT ${CFRAME_EXTERN_DIR}/boost_${BOOST_VERSION}
-           CACHE PATH "Boost directory." )
+    cframe_search_paths(
+        boost_${BOOST_VERSION}
+        "${CFRAME_EXTERN_SEARCH_PATHS}"
+        BOOST_ROOT
+    )
+
+    if ( "${BOOST_ROOT}" STREQUAL "" )
+      message(
+          FATAL_ERROR
+          "Boost not found, set BOOST_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
+      )
     endif()
   endif()
-
-  # Append to this variable which will be used to configure startup scripts
-  set( IGS_RUNTIME_DIRS ${IGS_RUNTIME_DIRS} ${BOOST_ROOT}/lib CACHE INTERNAL "" )
 
 endif()
 

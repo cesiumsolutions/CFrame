@@ -44,13 +44,6 @@ if ( WIN32 )
     endif()
   endif()
 
-  set( IGS_RUNTIME_DIRS
-       ${IGS_RUNTIME_DIRS}
-       ${QTDIR}/bin
-       ${QTDIR}/plugins
-       CACHE INTERNAL ""
-  )
-
 else()
 
   if ( QT_VERSION )

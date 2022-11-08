@@ -9,15 +9,18 @@ if ( WIN32 )
   endif()
 
   if ( NOT ZLIB_ROOT )
-    if ( (NOT "${CFRAME_EXTERN_DIR}" STREQUAL "") AND
-         (EXISTS "${CFRAME_EXTERN_DIR}/zlib-${ZLIB_VERSION}") )
-      set( ZLIB_ROOT ${CFRAME_EXTERN_DIR}/zlib-${ZLIB_VERSION} )
-    else()
+
+    cframe_search_paths(
+        zlib-${ZLIB_VERSION}
+        "${CFRAME_EXTERN_SEARCH_PATHS}"
+        ZLIB_ROOT
+    )
+
+    if ( "${ZLIB_ROOT}" STREQUAL "" )
       message(
           FATAL_ERROR
-          "Either ZLIB_ROOT or CFRAME_EXTERN_DIR are not set, or directory does not exist. Check installation."
+          "ZLib not found, set ZLIB_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
       )
-      return()
     endif()
   endif()
 

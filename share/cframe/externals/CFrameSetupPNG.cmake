@@ -9,15 +9,17 @@ if ( WIN32 )
   endif()
 
   if ( NOT PNG_ROOT )
-    if ( (NOT "${CFRAME_EXTERN_DIR}" STREQUAL "") AND
-         (EXISTS "${CFRAME_EXTERN_DIR}/libpng-${PNG_VERSION_STRING}") )
-      set( PNG_ROOT ${CFRAME_EXTERN_DIR}/libpng-${PNG_VERSION_STRING} )
-    else()
+    cframe_search_paths(
+        libpng-${PNG_VERSION_STRING}
+        "${CFRAME_EXTERN_SEARCH_PATHS}"
+        PNG_ROOT
+    )
+
+    if ( "${PNG_ROOT}" STREQUAL "" )
       message(
           FATAL_ERROR
-          "Either PNG_ROOT or CFRAME_EXTERN_DIR are not set, or directory does not exist. Check installation."
+          "PNG not found, set PNG_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
       )
-      return()
     endif()
   endif()
 
