@@ -28,18 +28,17 @@ option( BUILD_SHARED_LIBS "Toggle whether to build Shared Libraries" ON )
 # -----------------------------------------------------------------------------
 function( cframe_target_include_directories TARGET INCLUDE_DIRS )
 
-  set( scope PRIVATE )
+  set( SCOPES PUBLIC PRIVATE INTERFACE )
+  cframe_list_mapify( "${SCOPES}" "${INCLUDE_DIRS}" _DIRS )
 
-  foreach( entry ${INCLUDE_DIRS} )
-
-    if ( (${entry} STREQUAL "PUBLIC") OR
-         (${entry} STREQUAL "PRIVATE") OR
-         (${entry} STREQUAL "INTERFACE") )
-      set( scope ${entry} )
-    else()
-      target_include_directories( ${TARGET} "${scope}" "${entry}" )
-    endif()
-
+  foreach( SCOPE ${SCOPES} )
+    # Note: Need to call for each DIR individually because relative paths
+    # cause an error for some reason.
+    foreach( DIR ${${SCOPE}_DIRS} )
+      target_include_directories(
+          ${TARGET} "${SCOPE}" "${DIR}"
+      )
+    endforeach()
   endforeach()
 
 endfunction() # cframe_target_include_directories
