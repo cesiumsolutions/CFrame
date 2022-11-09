@@ -62,6 +62,9 @@ list(
 # Standard CMake Utilities
 include( CMakeParseArguments )
 
+# Option to control whether internal CFrame tests are run.
+option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
+
 # General Purpose Low-level Utilities
 include( CFrameMessage )
 include( CFrameListUtilities )
