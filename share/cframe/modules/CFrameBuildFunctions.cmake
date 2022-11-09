@@ -466,7 +466,7 @@ function( cframe_build_target )
 
     # Only add the static definition for the library if a special link type isn't specified
     if ( DEFINED cframe_build_target_LINK_TYPE )
-      if ( "cframe_build_target_LINK_TYPE" STREQUAL "STATIC" )
+      if ( cframe_build_target_LINK_TYPE STREQUAL "STATIC" )
         add_definitions( -D${cframe_build_target_TARGET_NAME}_STATIC )
       endif()
     elseif ( NOT BUILD_SHARED_LIBS )
