@@ -4,9 +4,9 @@
 #
 # -----------------------------------------------------------------------------
 
-# ----------------------------------------
-# Handle selection of C++ standard Version
-# ----------------------------------------
+# ---------------------------------------------
+# Handle selection of Library Loading Libraries
+# ---------------------------------------------
 
 if ( ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR
      ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin") )
@@ -18,7 +18,9 @@ if ( ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") OR
 else()
   set(
       CFRAME_SYSTEM_LOADER_LIBRARIES
+      Dbghelp.lib
       CACHE STRING
       "Libraries to link for runtime dynamic loading."
   )
+
 endif()
