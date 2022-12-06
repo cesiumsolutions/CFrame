@@ -16,7 +16,6 @@ set( CFRAME_INSTALL_DEV_DIR lib
 
 set( BUILD_SHARED_LIBS ON )
 set( CMAKE_DEBUG_POSTFIX d CACHE STRING "Postfix for Debug targets" )
-set( CMAKE_CXX_STANDARD 14 CACHE STRING "Version of C++ to use" )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 # For some reason, compiling with -g doesn't automatically define this standard macro
@@ -25,6 +24,18 @@ if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 else()
   add_definitions( -DNDEBUG )
 endif()
+
+option(
+    CFRAME_OPTION_EXCEPTIONS
+    "Turn on to enable exception handling"
+    ON
+)
+
+option(
+    CFRAME_OPTION_BIG_OBJECTS
+    "Turn ON to enable large compilation objects."
+    ON
+)
 
 if ( WIN32 )
 
@@ -37,22 +48,20 @@ if ( WIN32 )
   add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
   add_definitions( "-D_WIN32_WINNT=${CFRAME_WIN_VERSION}" )
 
-  set( PLATFORM_FLAGS "/EHsc /bigobj" CACHE STRING "Platform specific compile flags" )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PLATFORM_FLAGS}" )
-  set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${PLATFORM_FLAGS}" )
+  if ( CFRAME_OPTION_EXCEPTIONS )
+    set(
+        CFRAME_COMPILE_OPTIONS
+        ${CFRAME_COMPILE_OPTIONS} /EHsc
+        CACHE INTERNAL "Compile Options"
+    )
+  endif()
 
-  add_compile_options( /EHsc /bigobj )
+  if ( CFRAME_OPTION_BIG_OBJECTS )
+    set(
+        CFRAME_COMPILE_OPTIONS
+        ${CFRAME_COMPILE_OPTIONS} /bigobj
+        CACHE INTERNAL "Compile Options"
+    )
+  endif()
 
-  foreach( CONFIG ${CMAKE_CONFIGURATION_TYPES} )
-    string( TOUPPER ${CONFIG} UCONFIG )
-    set( CMAKE_CXX_FLAGS_${UCONFIG} "${CMAKE_CXX_FLAGS_${UCONFIG}} ${PLATFORM_FLAGS}" )
-    set( CMAKE_C_FLAGS_${UCONFIG} "${CMAKE_C_FLAGS_${UCONFIG}} ${PLATFORM_FLAGS}" )
-  endforeach()
-
-  set(
-      CFRAME_LOADER_LIBRARIES
-      Dbghelp.lib
-      CACHE STRING
-      "List of (platform specific) libraries to link"
-  )
 endif()

@@ -25,12 +25,22 @@ if ( WIN32 )
   # explicitly set it.
   # See: https://developercommunity.visualstudio.com/content/problem/139261/msvc-incorrectly-defines-cplusplus.html
   if ( ${MSVC_VERSION} GREATER 1900  )
-    if ( ${OPENIGS_CXX_STANDARD} EQUAL 97 )
-      add_definitions( "/Zc:__cplusplus-" )
-    elseif ( ${OPENIGS_CXX_STANDARD} EQUAL 11 )
-      add_definitions( "/Zc:__cplusplus" )
+    if ( ${CFRAME_CXX_STANDARD} EQUAL 97 )
+      set(
+          CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /Zc:__cplusplus-
+          CACHE INTERNAL "Compile Options"
+      )
+    elseif ( ${CFRAME_CXX_STANDARD} EQUAL 11 )
+      set(
+          CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /Zc:__cplusplus
+          CACHE INTERNAL "Compile Options"
+      )
     else()
-      add_definitions( "/std:c++${CMAKE_CXX_STANDARD}" "/Zc:__cplusplus" )
+      set(
+          CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
+              /std:c++${CMAKE_CXX_STANDARD} /Zc:__cplusplus
+          CACHE INTERNAL "Compile Options"
+      )
     endif()
   endif()
 endif()

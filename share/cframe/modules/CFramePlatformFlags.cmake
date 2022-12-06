@@ -9,45 +9,79 @@ if ( WIN32 )
     set( CMAKE_MSVC_VCVARS_ARGS amd64 CACHE INTERNAL "Argument to vcvars.bat" )
   endif()
 
-  add_definitions( -DNOMINMAX )
-
   # turn off dll-interface warning
-  add_definitions( "/wd4251" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /wd4251
+      CACHE INTERNAL "Compile Options"
+  )
   # turn off: non dll-interface struct '' used as base for dll-interface
-  add_definitions( "/wd4275" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /wd4275
+      CACHE INTERNAL "Compile Options"
+  )
   # turn off: "forcing value to bool" warning
-  add_definitions( "/wd4800" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /wd4800
+      CACHE INTERNAL "Compile Options"
+  )
   # turn off: unsafe use of type 'bool' in operation
-  add_definitions( "/wd4804" )
-  # prevent inclusion of superfluous windows file
-  add_definitions( "-DWIN32_LEAN_AND_MEAN" "-DWIN32_EXTRA_LEAN" )
-  # disable warning 4996: Function call with parameters that may be unsafe
-  add_definitions( "-D_SCL_SECURE_NO_WARNINGS" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS} /wd4804
+      CACHE INTERNAL "Compile Options"
+  )
+
+  # prevent inclusion of superfluous windows files
+  set(
+      CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
+          -DWIN32_LEAN_AND_MEAN -DWIN32_EXTRA_LEAN
+      CACHE INTERNAL "Compile Definitions"
+  )
+  # Calling any of the potentially unsafe methods in the C++ Standard Library
+  # results in Compiler Warning (level 3) C4996. To disable this warning,
+  # define the macro _SCL_SECURE_NO_WARNINGS in your code.
+  set(
+      CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
+          -D_SCL_SECURE_NO_WARNINGS
+      CACHE INTERNAL "Compile Definitions"
+  )
+  # disable Min/Max macros
+  set(
+      CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
+          -DNOMINMAX
+      CACHE INTERNAL "Compile Definitions"
+  )
 
   set( BUILD_MAX_PROCESSES 4
       CACHE STRING
       "The maximum number of parallel proces ses to use for compiling."
   )
+  list( APPEND CFRAME_COMPILE_OPTIONS "/MP${BUILD_MAX_PROCESSES}" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
+          "/MP${BUILD_MAX_PROCESSES}"
+      CACHE INTERNAL "Compile Options"
+  )
+
   option( BUILD_USE_PRECOMPILED_HEADERS
       "Set to ON to use precompiled headers." ON
   )
+
   set( BUILD_PCH_FACTOR 300
       CACHE STRING
       "The factor to use for allocating heap memory for precompiled headers."
   )
-
-  if ( BUILD_MAX_PROCESSES )
-    list( APPEND CFRAME_COMPILEFLAGS "/MP${BUILD_MAX_PROCESSES}" )
-  else()
-    list( APPEND CFRAME_COMPILEFLAGS "/MP2" )
-  endif()
-
-  set( CFRAME_COMPILEFLAGS
-      "${CFRAME_COMPILEFLAGS} /bigobj /Zm${BUILD_PCH_FACTOR} /EHsc"
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
+          "/Zm${BUILD_PCH_FACTOR}"
+      CACHE INTERNAL "Compile Options"
   )
 
 else()
 
-  list( APPEND CFRAME_COMPILEFLAGS "-fPIC -Wno-unused-local-typedefs" )
+  set(
+      CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
+          "-fPIC -Wno-unused-local-typedefs"
+      CACHE INTERNAL "Compile Options"
+  )
 
 endif()
