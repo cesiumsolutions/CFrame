@@ -83,12 +83,15 @@ function( cframe_load_projects )
 
     set( projectFound FALSE )
 
-    if ( EXISTS ${projectName} )
-      add_subdirectory( ${projectName} )
+    # If full path is provided, just use it as the project
+    if ( IS_ABSOLUTE ${projectName} )
+      cframe_add_subdirectory( ${projectName} )
       set( projectFound TRUE )
-    elseif( IS_DIRECTORY ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
+    # Check to see if is subdirectory of current source directory
+    elseif ( IS_DIRECTORY ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
       cframe_add_subdirectory( ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
       set( projectFound TRUE )
+    # Check in Project Search Paths
     else()
       foreach ( searchPath ${CFRAME_PROJECT_SEARCH_PATHS} )
         if ( IS_DIRECTORY ${searchPath}/${projectName} )
