@@ -54,8 +54,8 @@ endfunction() # cframe_target_include_directories
 #   LINK_TYPE           - the linking type for Library targets: STATIC, SHARED, or DEFAULT (the default)
 #   GROUP               - The organization group to place the library in (for IDE build environments)
 #   INCLUDE_DIRS        - a list of directories to include
-#   DEFINES             - a list of preprocessor definitions
-#   COMPILE_FLAGS       - a list of compilation flags
+#   COMPILE_OPTIONS     - a list of compile options, qualified with PUBLIC, PRIVATE, INTERFACE
+#   COMPILE_DEFINITIONS - a list of compile definitions, qualified with PUBLIC, PRIVATE, INTERFACE
 #   LINK_FLAGS          - a list of link flags
 #   LIBRARY_DIRS        - a list of library path dirs
 #   LIBRARIES           - a list of library dependencies
@@ -116,8 +116,8 @@ function( cframe_build_target )
   )
   set( multiValueArgs
        INCLUDE_DIRS
-       DEFINES
-       COMPILE_FLAGS
+       COMPILE_OPTIONS
+       COMPILE_DEFINITIONS
        LINK_FLAGS
        LIBRARY_DIRS
        LIBRARIES
@@ -147,9 +147,8 @@ function( cframe_build_target )
   cframe_message( MODE STATUS VERBOSITY 4 "LINK_TYPE:           ${ARGS_LINK_TYPE}" )
   cframe_message( MODE STATUS VERBOSITY 4 "GROUP:               ${ARGS_GROUP}" )
   cframe_message( MODE STATUS VERBOSITY 4 "INCLUDE_DIRS:        ${ARGS_INCLUDE_DIRS}" )
-  cframe_message( MODE STATUS VERBOSITY 4 "DEFINES:             ${ARGS_DEFINES}" )
-  cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_FLAGS:       ${ARGS_COMPILE_FLAGS}" )
-  cframe_message( MODE STATUS VERBOSITY 4 "LINK_FLAGS:          ${ARGS_LINK_FLAGS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_OPTIONS:     ${ARGS_COMPILE_OPTIONS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_DEFINITIONS: ${ARGS_COMPILE_DEFINITIONS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "LIBRARY_DIRS:        ${ARGS_LIBRARY_DIRS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "LIBRARIES:           ${ARGS_LIBRARIES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_PUBLIC:      ${ARGS_HEADERS_PUBLIC}" )
@@ -236,10 +235,6 @@ function( cframe_build_target )
 ##  cframe_filter_list( ARGS_QT_MOCFILES     CFRAME_FILE_EXCLUDE_LIST )
 ##  cframe_filter_list( ARGS_QT_UIFILES      CFRAME_FILE_EXCLUDE_LIST )
 ##  cframe_filter_list( ARGS_QT5_QRCFILES    CFRAME_FILE_EXCLUDE_LIST )
-
-  if ( DEFINED ARGS_DEFINES )
-      add_definitions( ${ARGS_DEFINES} )
-  endif()
 
   # ----------------------
   # Qt specific processing
@@ -390,7 +385,7 @@ function( cframe_build_target )
       ${${ARGS_TARGET_NAME}_RESOURCES}
   )
 
-  # If no sources (either specified or generated) were found, sppecify target
+  # If no sources (either specified or generated) were found, specify target
   # type as "INTERFACE"
   if ( ("${${ARGS_TARGET_NAME}_ALL_SOURCES}" STREQUAL "") AND
        ("${ARGS_TYPE}" STREQUAL "LIBRARY") )
@@ -604,14 +599,19 @@ function( cframe_build_target )
     endif()
   endif()
 
-  # set target compile flags
-  if ( DEFINED ARGS_COMPILE_FLAGS OR DEFINED CFRAME_OS_COMPILE_FLAGS )
-      set_target_properties(
-          ${ARGS_TARGET_NAME} PROPERTIES
-          COMPILE_FLAGS
-              ${ARGS_COMPILE_FLAGS}
-              ${CFRAME_OS_COMPILE_FLAGS}
+  # Set Target options, Definitions, and Properties
+  if ( NOT "${ARGS_TYPE}" STREQUAL "INTERFACE" )
+    if ( DEFINED ARGS_COMPILE_OPTIONS )
+      target_compile_options(
+          ${ARGS_TARGET_NAME} ${ARGS_COMPILE_OPTIONS}
       )
+    endif()
+
+    if ( DEFINED ARGS_COMPILE_DEFINITIONS )
+      target_compile_definitions(
+          ${ARGS_TARGET_NAME} ${ARGS_COMPILE_DEFINITIONS}
+      )
+    endif()
   endif()
 
   # install standard target artifacts
