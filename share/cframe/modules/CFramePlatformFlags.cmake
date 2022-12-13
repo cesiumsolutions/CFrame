@@ -80,7 +80,7 @@ else()
 
   set(
       CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
-          "-fPIC -Wno-unused-local-typedefs"
+          -Wno-unused-local-typedefs
       CACHE INTERNAL "Compile Options"
   )
 
