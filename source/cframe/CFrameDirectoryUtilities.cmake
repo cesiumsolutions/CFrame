@@ -375,8 +375,15 @@ function( cframe_add_subdirectory subDir )
   string( SUBSTRING ${relPath} 0 2 relPathPrefix )
 
   if ( relPathPrefix STREQUAL ".." )
-      get_filename_component( name ${relPath} NAME_WE )
-      add_subdirectory( ${relPath} ${name} )
+      # Get the absolute path resolving symbolic links
+      # See: https://stackoverflow.com/questions/39027269/cmake-convert-relative-path-to-absolute-path-with-build-directory-as-current-d
+      get_filename_component(
+          absPath ${relPath} REALPATH
+          BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+      )
+
+      get_filename_component( name ${absPath} NAME_WE )
+      add_subdirectory( ${absPath} ${name} )
   else()
       add_subdirectory( ${relPath} )
   endif()
