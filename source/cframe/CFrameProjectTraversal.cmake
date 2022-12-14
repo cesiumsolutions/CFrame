@@ -58,14 +58,14 @@ function( cframe_load_projects )
   cframe_search_subdirs(
       FILTER "^CMakeLists.txt$"
       DIRECTORIES ${CFRAME_PROJECT_AUTOLOAD_PATHS}
-      OUTVAR projectPaths
+      OUTVAR projectCMakeListsPaths
       RECURSE_MODE UNTIL_FOUND
       MAXRESULTS 0
   )
 
-  foreach( projectPath ${projectPaths} )
-    get_filename_component( projectDir ${projectPath} DIRECTORY )
-    get_filename_component( projectName ${projectPath} NAME_WE )
+  foreach( projectCMakeListsPath ${projectCMakeListsPaths} )
+    get_filename_component( projectDir ${projectCMakeListsPath} DIRECTORY )
+    get_filename_component( projectName ${projectDir} NAME )
     cframe_message(
         MODE STATUS
         TAGS CFrame LoadProjects
@@ -85,11 +85,12 @@ function( cframe_load_projects )
 
     # If full path is provided, just use it as the project
     if ( IS_ABSOLUTE ${projectName} )
-      cframe_add_subdirectory( ${projectName} )
+      get_filename_component( leafDir ${projectName} NAME )
+      cframe_add_project( ${leafDir} ${projectName} )
       set( projectFound TRUE )
     # Check to see if is subdirectory of current source directory
     elseif ( IS_DIRECTORY ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
-      cframe_add_subdirectory( ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
+      cframe_add_project( ${projectName} ${CFRAME_CURRENT_SOURCE_DIR}/${projectName} )
       set( projectFound TRUE )
     # Check in Project Search Paths
     else()
