@@ -589,7 +589,7 @@ function( cframe_build_target )
   endif()
 
   # set PIC on shared libraries
-  if ( NOT WIN32 AND NOT BUILD_SHARED_LIBS )
+  if ( NOT WIN32 )
     if( NOT "${ARGS_TYPE}" STREQUAL "INTERFACE" )
       # Ensure that static libraries use position independent code on Linux
       set_target_properties(
