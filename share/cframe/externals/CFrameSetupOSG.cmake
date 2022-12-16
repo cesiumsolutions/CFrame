@@ -55,6 +55,3 @@ else()
   )
 
 endif()
-
-include_directories( ${OPENSCENEGRAPH_INCLUDE_DIRS} )
-

@@ -15,6 +15,7 @@ macro( QT5_SETUP_COMPONENT COMPONENT )
 
   list( APPEND QT_LIBRARIES ${Qt5${COMPONENT}_LIBRARIES} )
   set( CMAKE_CXX_FLAGS "${Qt5${COMPONENT}_EXECUTABLE_COMPILE_FLAGS}" )
+
 endmacro()
 
 macro( QT5_SETUP_COMPONENTS COMPONENTS )
@@ -82,11 +83,6 @@ if ( QT_VERSION_4 )
   ##set( QT_USE_QT3SUPPORT TRUE )
   set( QT_USE_QTTEST TRUE )
   include( ${QT_USE_FILE} )
-  add_definitions(
-      ${QT_DEFINITIONS}
-      -DQT_NO_KEYWORDS
-      -DEXCLUDE_XHEADERS
-  )
 
 elseif ( QT_VERSION_5 )
 
@@ -116,15 +112,14 @@ elseif ( QT_VERSION_5 )
   )
   qt5_setup_components( QT5_COMPONENTS )
 
-  include_directories( ${QT_INCLUDES} )
-  add_definitions(
-      ${QT_DEFINITIONS}
-      -DQT_NO_KEYWORDS
-      -DEXCLUDE_XHEADERS
-  )
-
   set( CMAKE_AUTOMOC OFF )
   set( CMAKE_INCLUDE_CURRENT_DIR ON )
   set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
 endif()
+
+list(
+    APPEND QT_DEFINITIONS
+    QT_NO_KEYWORDS
+    EXCLUDE_XHEADERS
+)

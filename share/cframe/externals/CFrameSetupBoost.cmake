@@ -42,14 +42,10 @@ if ( WIN32 )
 
 endif()
 
-add_definitions( -DBOOST_SIGNALS_NO_DEPRECATION_WARNING )
-if ( BUILD_SHARED_LIBS )
-  add_definitions( -DBOOST_ALL_DYN_LINK )
-else()
+if ( NOT BUILD_SHARED_LIBS )
   set(Boost_USE_STATIC_LIBS        ON)
   set(Boost_USE_MULTITHREADED      ON)
   set(Boost_USE_STATIC_RUNTIME     OFF)
-####  add_definitions( -DBOOST_ALL_NO_LIB )
 endif()
 
 # Do initial search for Boost package to determine the actual
@@ -113,13 +109,23 @@ find_package( Boost REQUIRED
     ${BOOST_COMPONENTS}
 )
 
-include_directories( ${Boost_INCLUDE_DIR} )
-link_directories( ${Boost_LIBRARY_DIRS} )
-
-
-add_definitions(
-   -DBOOST_SIGNALS_DEFAULT_VERSION=${BOOST_SIGNALS_DEFAULT_VERSION}
+list(
+    APPEND Boost_DEFINITIONS
+    BOOST_SIGNALS_NO_DEPRECATION_WARNING
+    BOOST_SIGNALS_DEFAULT_VERSION=${BOOST_SIGNALS_DEFAULT_VERSION}
 )
+
+if ( BUILD_SHARED_LIBS )
+  list(
+      APPEND Boost_DEFINITIONS
+      BOOST_ALL_DYN_LINK
+  )
+else()
+  ##list(
+  ##    APPEND Boost_DEFINITIONS
+  ##    BOOST_ALL_NO_LIB
+  ##)
+endif()
 
 # For some platforms (e.g. Ubuntu 11.10), some Boost libraries must be
 # specified explicitly.
@@ -128,4 +134,3 @@ add_definitions(
 if ( Boost_ADD_LIBRARIES )
   list( APPEND Boost_LIBRARIES ${Boost_ADD_LIBRARIES} )
 endif()
-

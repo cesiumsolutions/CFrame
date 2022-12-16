@@ -28,7 +28,5 @@ if ( WIN32 )
   set( PNG_PNG_INCLUDE_DIR ${PNG_ROOT}/include )
   find_package( PNG REQUIRED )
 
-  ## include_directories( ${PNG_INCLUDE_DIRS} )
-
 endif()
 
