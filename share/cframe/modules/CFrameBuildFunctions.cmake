@@ -15,33 +15,89 @@ set_property(
 
 option( BUILD_SHARED_LIBS "Toggle whether to build Shared Libraries" ON )
 
+
 # -----------------------------------------------------------------------------
-# Forwards call to target_include_directories based on a list of directory
+# Forwards call to specified target function based on a list of argument
 # specifications that may include the keywords PUBLIC, PRIVATE, and INTERFACE.
-# Separates the list out based on these keywords and calls the lists to
-# target_include_directories accordingly.
+# Separates the list out based on these keywords and calls the lists to the
+# target function accordingly.
 #
-# @param TARGET [in] Name of target to add include directories to.
-# @param INCLUDE_DIRS [in] List of directories to include with possible embedded
-#                          scope keywords PUBLIC, PRIVATE, INTERFACE.
+# @param TARGET [in] Name of target to set compile options to.
+# @param FUNCTION_NAME Name of the target function to call without the "target_"
+#                      prefix, e.g. include_directories, link_libraries, etc.
+# @param ARGS [in] List of arguments to the function to set with possible
+#                  embedded scope keywords PUBLIC, PRIVATE, INTERFACE.
 # @see cframe_build_target
 # -----------------------------------------------------------------------------
-function( cframe_target_include_directories TARGET INCLUDE_DIRS )
+function( cframe_target_scoped_function TARGET FUNCTION_NAME ARGS )
+
+  get_target_property( type ${TARGET} TYPE )
 
   set( SCOPES PUBLIC PRIVATE INTERFACE )
-  cframe_list_mapify( "${SCOPES}" "${INCLUDE_DIRS}" _DIRS )
+  cframe_list_mapify( "${SCOPES}" "${ARGS}" _ARGS )
 
   foreach( SCOPE ${SCOPES} )
-    # Note: Need to call for each DIR individually because relative paths
-    # cause an error for some reason.
-    foreach( DIR ${${SCOPE}_DIRS} )
-      target_include_directories(
-          ${TARGET} "${SCOPE}" "${DIR}"
-      )
-    endforeach()
+
+    # Note: For INTERFACE targets, only INTERFACE can be specified as Scope
+    if ( ${type} STREQUAL "INTERFACE_LIBRARY" )
+
+      # Functions for compiliation, e.g. compile_options, compile_definitions
+      # cannot be set on INTERFACE targets
+      string( FIND "${FUNCTION_NAME}" "compile" pos )
+      if ( ${pos} GREATER_EQUAL 0 )
+        return()
+      endif()
+
+      set( ARG_SCOPE INTERFACE )
+    else()
+      set( ARG_SCOPE ${SCOPE} )
+    endif()
+
+    if ( NOT "${${SCOPE}_ARGS}" STREQUAL "" )
+
+      # Have to do a special case for Link Libraries :(
+      if ( "${FUNCTION_NAME}" STREQUAL "link_libraries" )
+        # Library specifications may have "optimized" or "debug" in them so must
+        # specify them all at once for each CONFIG
+        set( CONFIGS default optimized debug )
+        cframe_list_mapify( "${CONFIGS}" "${${SCOPE}_ARGS}" _LIBS )
+
+        foreach( CONFIG ${CONFIGS} )
+          if ( NOT "${${CONFIG}_LIBS}" STREQUAL "" )
+            if ( NOT "${CONFIG}" STREQUAL "default" )
+              set( LIB_CONFIG "${CONFIG}" )
+            endif()
+            cmake_language(
+                CALL "target_${FUNCTION_NAME}"
+                "${TARGET}" "${ARG_SCOPE}" "${LIB_CONFIG}" "${${CONFIG}_LIBS}"
+            )
+          endif()
+        endforeach()
+
+      elseif( ("${FUNCTION_NAME}" STREQUAL "include_directories") OR
+              ("${FUNCTION_NAME}" STREQUAL "link_directories") )
+        # Note: Need to call for each ARG individually because relative paths
+        # in directory-related functons cause an error for some reason.
+        # E.g.  include_directories, link_directories
+        foreach( ARG ${${SCOPE}_ARGS} )
+          cmake_language(
+              CALL "target_${FUNCTION_NAME}"
+              "${TARGET}" "${ARG_SCOPE}" "${ARG}"
+          )
+        endforeach()
+
+      else()
+        cmake_language(
+            CALL "target_${FUNCTION_NAME}"
+            "${TARGET}" "${ARG_SCOPE}" "${${SCOPE}_ARGS}"
+        )
+      endif()
+
+    endif() # Non-empty ${SCOPE}_ARGS
+
   endforeach()
 
-endfunction() # cframe_target_include_directories
+endfunction() # cframe_target_scoped_function
 
 # -----------------------------------------------------------------------------
 # Function to encapsulate the most common standard steps for building a target.
@@ -51,13 +107,15 @@ endfunction() # cframe_target_include_directories
 #   OUTPUT_NAME         - name of the output, if not specified, uses TARGET_NAME
 #   PROJECT_LABEL       - the name to display in IDEs, defaults to TARGET_NAME
 #   TYPE                - the type of target, either "Library", "Executable", "Interface", "Test" or "Custom"
-#   LINK_TYPE           - the linking type for Library targets: STATIC, SHARED, or DEFAULT (the default)
+#   LINK_TYPE           - the linking type for Library targets: STATIC, SHARED, INTERFACE, or DEFAULT (the default)
 #   GROUP               - The organization group to place the library in (for IDE build environments)
-#   INCLUDE_DIRS        - a list of directories to include
+#   INCLUDE_DIRS        - a list of directories to use to look for include files
+#                         with specified scope of PUBLIC, PRIVATE, INTERFACE
 #   COMPILE_OPTIONS     - a list of compile options, qualified with PUBLIC, PRIVATE, INTERFACE
 #   COMPILE_DEFINITIONS - a list of compile definitions, qualified with PUBLIC, PRIVATE, INTERFACE
-#   LINK_FLAGS          - a list of link flags
-#   LIBRARY_DIRS        - a list of library path dirs
+#   LINK_DIRS           - a list of directory to use to look up library
+#                         dependencies, with specied scope PUBLIC, PRIVATE
+#                         or INTERFACE
 #   LIBRARIES           - a list of library dependencies
 #   HEADERS_PUBLIC      - a list of public header files (that will be installed to the HEADERS_INSTALL_DIR)
 #   HEADERS_PRIVATE     - a list of private header files
@@ -118,8 +176,7 @@ function( cframe_build_target )
        INCLUDE_DIRS
        COMPILE_OPTIONS
        COMPILE_DEFINITIONS
-       LINK_FLAGS
-       LIBRARY_DIRS
+       LINK_DIRS
        LIBRARIES
        HEADERS_PUBLIC
        HEADERS_PRIVATE
@@ -149,7 +206,7 @@ function( cframe_build_target )
   cframe_message( MODE STATUS VERBOSITY 4 "INCLUDE_DIRS:        ${ARGS_INCLUDE_DIRS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_OPTIONS:     ${ARGS_COMPILE_OPTIONS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "COMPILE_DEFINITIONS: ${ARGS_COMPILE_DEFINITIONS}" )
-  cframe_message( MODE STATUS VERBOSITY 4 "LIBRARY_DIRS:        ${ARGS_LIBRARY_DIRS}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "LINK_DIRS:           ${ARGS_LINK_DIRS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "LIBRARIES:           ${ARGS_LIBRARIES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_PUBLIC:      ${ARGS_HEADERS_PUBLIC}" )
   cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_PRIVATE:     ${ARGS_HEADERS_PRIVATE}" )
@@ -325,10 +382,6 @@ function( cframe_build_target )
   # --------------------------------
   # Massaging of dependent libraries
   # --------------------------------
-  if ( DEFINED ARGS_LIBRARY_DIRS )
-    link_directories( ${ARGS_LIBRARY_DIRS} )
-  endif()
-
   if ( DEFINED ARGS_LINK_TYPE )
     if ( ARGS_LINK_TYPE STREQUAL "SHARED" )
       set( LINK_TYPE SHARED )
@@ -442,11 +495,12 @@ function( cframe_build_target )
     elseif ( NOT BUILD_SHARED_LIBS )
       add_definitions( -D${ARGS_TARGET_NAME}_STATIC )
     endif()
+
     add_library(
         ${ARGS_TARGET_NAME} ${LINK_TYPE}
         ${${ARGS_TARGET_NAME}_ALL_FILES}
     )
-    if ( "ARGS_LINK_TYPE" STREQUAL "DYNAMIC" )
+    if ( "LINK_TYPE" STREQUAL "DYNAMIC" )
       set_target_properties(
           ${ARGS_TARGET_NAME} PROPERTIES
           LINK_DEPENDS_NO_SHARED TRUE
@@ -464,14 +518,17 @@ function( cframe_build_target )
 
   elseif( "${ARGS_TYPE}" STREQUAL "INTERFACE" )
     add_library( ${ARGS_TARGET_NAME} INTERFACE )
+
+    foreach( INTERFACE_FILE ${${ARGS_TARGET_NAME}_ALL_FILES} )
+      get_filename_component( ABS_FILE_PATH ${INTERFACE_FILE} ABSOLUTE )
+      list( APPEND INTERFACE_FILES ${ABS_FILE_PATH} )
+    endforeach()
+
     set_property(
         TARGET ${ARGS_TARGET_NAME}
         PROPERTY
             INTERFACE_SOURCES
-                ${ARGS_HEADERS_PUBLIC}
-                ${ARGS_FILES_PUBLIC}
-                ${ARGS_HEADERS_PRIVATE}
-                ${ARGS_FILES_PRIVATE}
+                ${INTERFACE_FILES}
     )
     ## HACK: Interfaces don't show up in IDEs, so make a custom target
     message( STATUS
@@ -533,27 +590,37 @@ function( cframe_build_target )
     endif()
   endif()
 
-  if( DEFINED ARGS_LIBRARIES )
-    if ( "${ARGS_TYPE}" STREQUAL "INTERFACE")
-      target_link_libraries(
-          ${ARGS_TARGET_NAME} INTERFACE
-          ${ARGS_LIBRARIES}
-      )
-    else()
-      target_link_libraries(
-          ${ARGS_TARGET_NAME}
-          ${ARGS_LIBRARIES}
-      )
-    endif()
+  # ----------------------------------------------------------------
+  # Set Target Options, Definitions, Include and Link specifications
+  # Usually set by the CMake target_* functions.
+  # ----------------------------------------------------------------
+  if ( DEFINED ARGS_COMPILE_OPTIONS )
+    cframe_target_scoped_function(
+        ${ARGS_TARGET_NAME} "compile_options" "${ARGS_COMPILE_OPTIONS}"
+    )
   endif()
 
-  # -----------------------
-  # Set include directories
-  # -----------------------
+  if ( DEFINED ARGS_COMPILE_DEFINITIONS )
+    cframe_target_scoped_function(
+        ${ARGS_TARGET_NAME} "compile_definitions" "${ARGS_COMPILE_DEFINITIONS}"
+    )
+  endif()
+
   if ( DEFINED ARGS_INCLUDE_DIRS )
-    cframe_target_include_directories(
-        ${ARGS_TARGET_NAME}
-        "${ARGS_INCLUDE_DIRS}"
+    cframe_target_scoped_function(
+        ${ARGS_TARGET_NAME} "include_directories" "${ARGS_INCLUDE_DIRS}"
+    )
+  endif()
+
+  if ( DEFINED ARGS_LINK_DIRS )
+    cframe_target_scoped_function(
+        ${ARGS_TARGET_NAME} "link_directories" "${ARGS_LINK_DIRS}"
+    )
+  endif()
+
+  if( DEFINED ARGS_LIBRARIES )
+    cframe_target_scoped_function(
+        ${ARGS_TARGET_NAME} "link_libraries" "${ARGS_LIBRARIES}"
     )
   endif()
 
@@ -595,21 +662,6 @@ function( cframe_build_target )
       set_target_properties(
           ${ARGS_TARGET_NAME} PROPERTIES
           POSITION_INDEPENDENT_CODE ON
-      )
-    endif()
-  endif()
-
-  # Set Target options, Definitions, and Properties
-  if ( NOT "${ARGS_TYPE}" STREQUAL "INTERFACE" )
-    if ( DEFINED ARGS_COMPILE_OPTIONS )
-      target_compile_options(
-          ${ARGS_TARGET_NAME} ${ARGS_COMPILE_OPTIONS}
-      )
-    endif()
-
-    if ( DEFINED ARGS_COMPILE_DEFINITIONS )
-      target_compile_definitions(
-          ${ARGS_TARGET_NAME} ${ARGS_COMPILE_DEFINITIONS}
       )
     endif()
   endif()
