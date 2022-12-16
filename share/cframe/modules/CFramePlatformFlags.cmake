@@ -33,7 +33,7 @@ if ( WIN32 )
   # prevent inclusion of superfluous windows files
   set(
       CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
-          -DWIN32_LEAN_AND_MEAN -DWIN32_EXTRA_LEAN
+          WIN32_LEAN_AND_MEAN WIN32_EXTRA_LEAN
       CACHE INTERNAL "Compile Definitions"
   )
   # Calling any of the potentially unsafe methods in the C++ Standard Library
@@ -41,13 +41,13 @@ if ( WIN32 )
   # define the macro _SCL_SECURE_NO_WARNINGS in your code.
   set(
       CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
-          -D_SCL_SECURE_NO_WARNINGS
+          _SCL_SECURE_NO_WARNINGS
       CACHE INTERNAL "Compile Definitions"
   )
   # disable Min/Max macros
   set(
       CFRAME_COMPILE_DEFINITIONS ${CFRAME_COMPILE_DEFINITIONS}
-          -DNOMINMAX
+          NOMINMAX
       CACHE INTERNAL "Compile Definitions"
   )
 

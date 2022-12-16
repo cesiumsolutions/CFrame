@@ -2,7 +2,17 @@
 macro( QT5_SETUP_COMPONENT COMPONENT )
   find_package( Qt5${COMPONENT} )
   list( APPEND QT_INCLUDES ${Qt5${COMPONENT}_INCLUDE_DIRS} )
-  list( APPEND QT_DEFINTIONS ${Qt5${COMPONENT}_DEFINITIONS} )
+
+  # Strip off the preceding "-D" from each definition as this was causing
+  # problems on Linux (RHEL8)
+  foreach( COMPONENT_DEFINITION ${Qt5${COMPONENT}_DEFINITIONS} )
+    string(
+        SUBSTRING "${COMPONENT_DEFINITION}" 2 -1
+        COMP_DEF
+    )
+    list( APPEND QT_DEFINITIONS ${COMP_DEF} )
+  endforeach()
+
   list( APPEND QT_LIBRARIES ${Qt5${COMPONENT}_LIBRARIES} )
   set( CMAKE_CXX_FLAGS "${Qt5${COMPONENT}_EXECUTABLE_COMPILE_FLAGS}" )
 endmacro()
