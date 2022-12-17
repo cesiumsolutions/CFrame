@@ -698,3 +698,108 @@ function( cframe_build_target )
   endif()
 
 endfunction() # cframe_build_target
+
+
+# -----------------------------------------------------------------------------
+# Function to create a project and installation based on a directory and
+# preserve its subdirectory structure.
+#
+# Parameters:
+#   TARGET_NAME         - name of the target to build
+#   PROJECT_LABEL       - the name to display in IDEs, defaults to TARGET_NAME
+#   GROUP               - The organization group to place the library in
+#                         (for IDE build environments)
+#   RELATIVE_DIR        - The directory from which files should be relative to.
+#                         Defaults to ${CMAKE_CURRENT_SOURCE_DIR}
+#   FILE_PATTERN        - The pattern to use for including files. Defaults to *.
+#   INSTALL_DIR         - the directory to install files to
+#
+# Global variables defined/modified:
+#
+#  BUILD_TARGET_${TARGET_NAME} - defines option
+#  BUILD_GROUP_${GROUP}        - defines option
+# -----------------------------------------------------------------------------
+function( cframe_directory_target )
+
+  cframe_message( MODE STATUS VERBOSITY 3
+      "CFrame: FUNCTION: cframe_directory_target"
+  )
+
+  # -----------------------------------
+  # Set up and parse multiple arguments
+  # -----------------------------------
+  set( options
+  )
+  set( oneValueArgs
+       TARGET_NAME
+       PROJECT_LABEL
+       GROUP
+       RELATIVE_DIR
+       FILE_PATTERN
+       INSTALL_DIR
+  )
+  set( multiValueArgs
+  )
+
+  cmake_parse_arguments(
+      ARGS
+      "${options}"
+      "${oneValueArgs}"
+      "${multiValueArgs}"
+      ${ARGN}
+  )
+
+  if ( NOT DEFINED ARGS_RELATIVE_DIR )
+    set( ARGS_RELATIVE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
+  endif()
+  if ( NOT DEFINED ARGS_FILE_PATTERN )
+    set( ARGS_FILE_PATTERN "*")
+  endif()
+
+  file(
+      GLOB_RECURSE ALL_FILES
+      LIST_DIRECTORIES FALSE
+      RELATIVE "${ARGS_RELATIVE_DIR}"
+      "${ARGS_FILE_PATTERN}"
+  )
+
+  source_group(
+      TREE "${ARGS_RELATIVE_DIR}"
+      FILES "${ALL_FILES}"
+  )
+
+  # Based on:
+  # https://stackoverflow.com/questions/11096471/how-can-i-install-a-hierarchy-of-files-using-cmake
+  if ( DEFINED ARGS_INSTALL_DIR )
+
+    file( GLOB items "${ARGS_RELATIVE_DIR}/${ARGS_FILE_PATTERN}" )
+
+    foreach( item ${items} )
+      if ( IS_DIRECTORY ${item} )
+        list( APPEND dirsToDeploy ${item} )
+      else()
+        list( APPEND filesToDeploy ${item} )
+      endif()
+    endforeach()
+
+    install(
+        DIRECTORY ${dirsToDeploy}
+        DESTINATION ${ARGS_INSTALL_DIR}
+    )
+    install(
+        FILES ${filesToDeploy}
+        DESTINATION ${ARGS_INSTALL_DIR}
+    )
+  endif() # ARGS_INSTALL_DIR Defined
+
+  cframe_build_target(
+      TARGET_NAME   "${ARGS_TARGET_NAME}"
+      PROJECT_LABEL "${ARGS_PROJECT_LABEL}"
+      TYPE          Custom
+      GROUP         "${ARGS_GROUP}"
+      FILES_PUBLIC
+          ${ALL_FILES}
+  )
+
+endfunction() # cframe_directory_target
+
