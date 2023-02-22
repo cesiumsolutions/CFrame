@@ -26,7 +26,12 @@ if ( WIN32 )
 
   find_package( ZLIB ${ZLIB_VERSION} REQUIRED )
 
-  ## include_directories( ${ZLIB_INCLUDE_DIRS} )
+  set(
+      ZLIB_LIBRARY
+          optimized ${ZLIB_LIBRARY_RELEASE}
+          debug ${ZLIB_LIBRARY_DEBUG}
+      CACHE PATH "Path to ZLib Library"
+  )
 
 endif()
 
