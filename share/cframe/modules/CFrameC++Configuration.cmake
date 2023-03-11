@@ -43,4 +43,15 @@ if ( WIN32 )
       )
     endif()
   endif()
+
+else()
+
+  if ( NOT ${CFRAME_CXX_STANDARD} EQUAL 97 )
+    set(
+	    CFRAME_COMPILE_OPTIONS ${CFRAME_COMPILE_OPTIONS}
+		    -std=c++${CFRAME_CXX_STANDARD}
+		CACHE INTERNAL "Compile Options"
+	)
+  endif()
+
 endif()
