@@ -19,26 +19,26 @@ if ( ${CFRAME_INCLUDE_CFRAME_SOURCE} )
   )
 
   # Remove .git directory files
-  set( CFRAME_GIT_FILES "" )
-  foreach( FILE ${CFRAME_ALL_FILES} )
-    string( SUBSTRING ${FILE} 0 4 GIT_PART )
-    if ( "${GIT_PART}" STREQUAL ".git" )
-      list( APPEND CFRAME_GIT_FILES ${FILE} )
-    endif()
-  endforeach()
-  if ( "{CFRAME_GIT_FILES}" )
-    list( REMOVE_ITEM CFRAME_ALL_FILES ${CFRAME_GIT_FILES} )
-  endif()
+  list(
+      FILTER CFRAME_ALL_FILES
+      EXCLUDE REGEX ".git"
+  )
 
   source_group(
       TREE ${CFRAME_DIR}
+      PREFIX CFrame
       FILES
           ${CFRAME_ALL_FILES}
   )
   add_custom_target(
-      CFrame
+      cframe-source
       SOURCES
           ${CFRAME_ALL_FILES}
+  )
+
+  set_target_properties(
+      cframe-source PROPERTIES
+      FOLDER CFrame
   )
 
 endif()
