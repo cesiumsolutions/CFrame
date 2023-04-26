@@ -15,6 +15,17 @@ set(
     to cframe_generate_version_files"
 )
 
+set(
+   CFRAME_VERSION_TEMPLATE_FILE_PUBLIC
+   ${CMAKE_CURRENT_LIST_DIR}/detail/VersionTemplate.hpp.in
+   CACHE STRING "Public Version template file"
+)
+set(
+   CFRAME_VERSION_TEMPLATE_FILE_PRIVATE
+   ${CMAKE_CURRENT_LIST_DIR}/detail/VersionTemplate.cpp.in
+   CACHE STRING "Private Version template file"
+)
+
 # -----------------------------------------------------------------------------
 # @brief Generates files that contain version information.
 # Uses the specified template files to configure files replacing

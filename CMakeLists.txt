@@ -61,3 +61,5 @@ set(
 if ( NOT "${CFRAME_PROJECT_NAME}" STREQUAL "CFrame" )
   project( ${CFRAME_PROJECT_NAME} )
 endif()
+
+add_subdirectory( libs )
