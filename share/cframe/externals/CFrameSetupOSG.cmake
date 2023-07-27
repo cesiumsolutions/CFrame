@@ -9,6 +9,16 @@ include_directories( ${OPENGL_INCLUDE_DIR} )
 # Set up OpenSceneGraph/OpenThreads stuff
 # ---------------------------------------
 
+set( OSG_COMPONENTS
+    DB GA Shadow Sim Text Util Viewer
+    CACHE STRING "OpenSceneGraph Commponents"
+)
+
+foreach( OSG_COMPONENT ${OSG_COMPONENTS} )
+  list( APPEND OSG_PACKAGE_COMPONENTS "osg${OSG_COMPONENT}" )
+endforeach()
+
+
 if ( WIN32 )
   if ( NOT OSG_VERSION )
     set( OSG_VERSION 3.6.3 CACHE STRING "OpenSceneGraph Version" )
@@ -32,26 +42,16 @@ if ( WIN32 )
 
   endif()
 
-  find_package( OpenSceneGraph ${OSG_VERSION} REQUIRED
-                osgDB
-                osgGA
-                osgShadow
-                osgSim
-                osgText
-                osgUtil
-                osgViewer
+  find_package(
+      OpenSceneGraph ${OSG_VERSION}
+      REQUIRED COMPONENTS ${OSG_PACKAGE_COMPONENTS}
   )
 
 else()
 
-  find_package( OpenSceneGraph REQUIRED COMPONENTS
-                osgDB
-                osgGA
-                osgShadow
-                osgSim
-                osgText
-                osgUtil
-                osgViewer
+  find_package(
+      OpenSceneGraph
+      REQUIRED COMPONENTS ${OSG_PACKAGE_COMPONENTS}
   )
 
 endif()
