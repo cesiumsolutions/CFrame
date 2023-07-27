@@ -206,9 +206,9 @@ function( cframe_generate_version_files )
 
   # Configure the Public (Header) file and install it
   if ( ARGS_INSTALL_DIR )
-    set( GENERATED_SUBDIR ${ARGS_INSTALL_DIR} )
+    set( GENERATED_SUBDIR generated/include/${ARGS_INSTALL_DIR} )
   else()
-    set( GENERATED_SUBDIR ${ARGS_PRODUCT_NAME} )
+    set( GENERATED_SUBDIR generated/include/${ARGS_PRODUCT_NAME} )
   endif()
 
   if ( ARGS_TEMPLATE_FILE_PUBLIC )

@@ -15,6 +15,7 @@ cframe_generate_version_files(
 cframe_build_target(
     TARGET_NAME cframeversion
     TYPE        LIBRARY
+    LINK_TYPE   STATIC
     GROUP       CFrame/Libraries
     INCLUDE_DIRS
         PUBLIC
