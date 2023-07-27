@@ -383,11 +383,11 @@ function( cframe_build_target )
   # Massaging of dependent libraries
   # --------------------------------
   if ( DEFINED ARGS_LINK_TYPE )
-    if ( ARGS_LINK_TYPE STREQUAL "SHARED" )
+    if ( "${ARGS_LINK_TYPE}" STREQUAL "SHARED" )
       set( LINK_TYPE SHARED )
-    elseif( ARGS_LINK_TYPE STREQUAL "STATIC" )
+    elseif( "${ARGS_LINK_TYPE}" STREQUAL "STATIC" )
       set( LINK_TYPE STATIC )
-    elseif( ARGS_LINK_TYPE STREQUAL "INTERFACE" )
+    elseif( "${ARGS_LINK_TYPE}" STREQUAL "INTERFACE" )
       set( LINK_TYPE INTERFACE )
     endif()
   endif()
@@ -397,20 +397,6 @@ function( cframe_build_target )
     else()
       set( LINK_TYPE STATIC )
     endif()
-  endif()
-
-  # When building static libraries, add the corresponding compile definition for each of the linked in libraries
-  # This requires that:
-  #   - all libraries be specified that will be linked even though CMake automatically links in
-  #     derivative dependent libraries (only when building shared libs)
-  #   - the library names use the <libname>_STATIC to indicate static linking
-  #   - the ARGS_LIBRARIES doesn't use full paths for its elements
-  if ( NOT BUILD_SHARED_LIBS )
-    foreach( TARGET_LIB ${ARGS_LIBRARIES} )
-      if ( NOT (TARGET_LIB STREQUAL "optimized") AND NOT (TARGET_LIB STREQUAL "debug") )
-        add_definitions( -D${TARGET_LIB}_STATIC )
-      endif()
-    endforeach()
   endif()
 
   # -----------------
@@ -588,6 +574,15 @@ function( cframe_build_target )
           PROJECT_LABEL   ${ARGS_PROJECT_LABEL}
       )
     endif()
+  endif()
+
+  if ( "${LINK_TYPE}" STREQUAL "STATIC" )
+    set(
+        ARGS_COMPILE_DEFINITIONS
+        "${ARGS_COMPILE_DEFINITIONS}"
+        PUBLIC
+            ${ARGS_TARGET_NAME}_STATIC
+    )
   endif()
 
   # ----------------------------------------------------------------
