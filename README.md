@@ -1,6 +1,9 @@
 # CFrame: A CMake-based source code framework
 ---------------------------------------------
 
+**Note:** This documentation is very out of date and some major changes have been made to the structure and details. However the overriding spirit is the same. Please contact Cesium Solutions at info@cesiumsolutions.com if you are interested in using this framework or contributing. Cesium Solutions is actively using CFrame in all/most of its projects.
+</endnote>
+
 CFrame is a higher level framework for organizing and setting up CMake-based
 software projects. it is primarily intended for more complex projects that may have multiple components that can be mixed and and may be shared among several projects. CFrame allows you to organize these projects while also separating and sharing CMake scripts, or using some standard CMake scripts that CFrame offers.
 
