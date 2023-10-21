@@ -299,11 +299,19 @@ function( cframe_build_target )
 
   # Process Qt MOC Files
   if ( ARGS_QT_MOCFILES )
-    qt_wrap_cpp(
-        ${ARGS_TARGET_NAME}
-        ${ARGS_TARGET_NAME}_MOCSOURCES
-        ${ARGS_QT_MOCFILES}
-    )
+    if ( QT_VERSION_5 )
+      qt5_wrap_cpp(
+          ${ARGS_TARGET_NAME}_MOCSOURCES
+          ${ARGS_QT_MOCFILES}
+          TARGET ${ARGS_TARGET_NAME}
+      )
+    else()
+      qt_wrap_cpp(
+          ${ARGS_TARGET_NAME}
+          ${ARGS_TARGET_NAME}_MOCSOURCES
+          ${ARGS_QT_MOCFILES}
+      )
+    endif()
 
     source_group(
         \\generated\\moc_files FILES
