@@ -1,3 +1,7 @@
+option( BUILD_TARGET_cframeversion "Build CFrame version library" OFF )
+if ( NOT BUILD_TARGET_cframeversion )
+  return()
+endif()
 
 include( CFrameSetupBoost )
 
