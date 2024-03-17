@@ -2,7 +2,8 @@
 # Set up MySQL dependency
 # --------------------------
 
-if ( LINUX )
+# Note: LINUX isn't definied in Docker images for some reason
+if ( LINUX OR ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux") )
 
   # TODO: Fix these so not using hardcoded paths
   set(
@@ -16,6 +17,7 @@ if ( LINUX )
   set(
       MySQL_LIBRARIES -lmysqlclient
   )
+
 endif()
 
 if ( WIN32 )
