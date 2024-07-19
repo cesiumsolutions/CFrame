@@ -27,8 +27,11 @@ if ( WIN32 )
   set( CURL_DIR ${CURL_ROOT} )
 
   # These have to be hardcoded for some reason, kind of useless if you have to specify everything before find_package can find it for you
-  set( CURL_LIBRARY ${CURL_ROOT}/lib/libcurl_imp.lib )
-  set( CURL_LIBRARY_DEBUG ${CURL_ROOT}/lib/libcurl-d_imp.lib )
+  ##set( CURL_LIBRARY ${CURL_ROOT}/lib/libcurl_imp.lib )
+  ##set( CURL_LIBRARY_DEBUG ${CURL_ROOT}/lib/libcurl-d_imp.lib )
+  set( CURL_LIBRARY ${CURL_ROOT}/lib/libcurl.lib )
+  set( CURL_LIBRARY_DEBUG ${CURL_ROOT}/lib/libcurl.lib )
+
   set( CURL_INCLUDE_DIR ${CURL_ROOT}/include )
 
   set(
