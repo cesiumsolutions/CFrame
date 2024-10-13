@@ -5,7 +5,7 @@
 if ( WIN32 )
 
   if ( NOT ZLIB_VERSION )
-    set( ZLIB_VERSION 1.2.11 CACHE STRING "ZLib Version" )
+    set( ZLIB_VERSION 1.3.1 CACHE STRING "ZLib Version" )
   endif()
 
   if ( NOT ZLIB_ROOT )
