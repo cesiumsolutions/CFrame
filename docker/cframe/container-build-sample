@@ -1,0 +1,50 @@
+#!/usr/bin/bash
+
+# Script to build from within the Container
+
+#SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+#echo $SCRIPT_DIR
+
+. /home/cframe/source/CFrame/docker/cframe/options
+
+# -----------------------------------------------
+# Make Sample Release
+# -----------------------------------------------
+if $RELEASE; then
+  mkdir -p ~/build/openigs/Release
+  pushd $PWD
+  cd ~/build/openigs/Release
+
+  cmake \
+    -G "Unix Makefiles" \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -DCMAKE_LINK_DEPENDS_NO_SHARED:BOOL=ON \
+    -DCMAKE_INSTALL_PREFIX:PATH=/home/cframe/install/qtosgboost \
+    -DBoost_NO_BOOST_CMAKE:BOOL=ON \
+    /home/cframe/source/CFrame/share/samples/qtosgboost
+
+  time make -j $NUMPROCS VERBOSE=$VERBOSE
+  make install
+  popd
+fi
+
+# -----------------------------------------------
+# Make Sample Debug
+# -----------------------------------------------
+if $DEBUG; then
+  mkdir -p ~/build/openigs/Debug
+  pushd $PWD
+  cd ~/build/openigs/Debug
+
+  cmake \
+    -G "Unix Makefiles" \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -DCMAKE_LINK_DEPENDS_NO_SHARED:BOOL=ON \
+    -DCMAKE_INSTALL_PREFIX:PATH=/home/cframe/install/qtosgboost \
+    -DBoost_NO_BOOST_CMAKE:BOOL=ON \
+    /home/cframe/source/CFrame/share/samples/qtosgboost
+
+  time make -j $NUMPROCS VERBOSE=$VERBOSE
+  make install
+  popd
+fi
