@@ -1,0 +1,49 @@
+
+# -----------------------------------------------
+# Get and Parse Options
+# -----------------------------------------------
+RELEASE=false
+DEBUG=false
+NUMPROCS=2
+VERBOSE=0
+
+usage() {
+  echo "Usage: $0 <options>" 1>&2
+  echo "  -r       Build Release (default: true)" 1>&2
+  echo "  -d       Build Debug (default: false)" 1>&2
+  echo "  -p <num> Number of processors to use (default: 2)" 1>&2
+  echo "  -v       Verbose (default: false)" 1>&2
+  exit 1
+}
+
+while getopts ":hrdp:v" opt; do
+  case $opt in
+    r)
+      RELEASE=true
+      ;;
+    d)
+      DEBUG=true
+      ;;
+    p)
+      NUMPROCS=$OPTARG
+      ;;
+    v)
+      VERBOSE=1
+      ;;
+    h)
+      usage
+      ;;
+    *)
+      echo "Invalid option: -$OPTARG" >&2
+      usage
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      usage
+      ;;
+  esac
+done
+
+if !($RELEASE) && !($DEBUG); then
+  RELEASE=true
+fi

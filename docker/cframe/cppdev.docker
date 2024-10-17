@@ -1,0 +1,57 @@
+FROM ubuntu:22.04 as cppdev
+
+# Enable all repositories
+##RUN add-apt-repository universe
+##RUN add-apt-repository multiverse
+##RUN add-apt-repository restricted
+RUN apt update && apt install -y sudo
+
+# Disable any interactivity installation of packages
+ENV DEBIAN_FRONTEND noninteractive
+ENV DISPLAY=host.docker.internal:0.0
+ENV CHOKIDAR_USEPOLLING=true
+
+# General packages
+RUN apt update -y
+RUN apt install -y vim
+RUN apt install -y \
+    inetutils-ping \
+    inetutils-tools
+
+# Software Development packages
+RUN apt install -y build-essential
+RUN apt install -y git
+
+# CMake
+RUN apt install -y \
+    cmake \
+    cmake-curses-gui \
+    cmake-gui
+
+# Boost
+RUN apt install -y libboost-all-dev
+
+# Qt
+RUN apt install -y \
+    qtbase5-dev \
+    qttools5-dev \
+    qttools5-dev-tools
+
+# OpenSceneGraph
+RUN apt install -y \
+    libopenscenegraph-dev
+
+# Setup CFrame Paths Environment Variables
+ENV PATH $PATH:/home/cframe/install/cframe/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/home/cframe/install/cframe/lib
+
+# Setup User
+RUN useradd \
+    --create-home \
+    --shell /bin/bash \
+    --groups sudo \
+    --password $(perl -e 'print crypt($ARGV[0], "password")' 'CFrame123') \
+    cframe
+USER cframe
+WORKDIR /home/cframe
+

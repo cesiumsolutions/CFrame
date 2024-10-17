@@ -1,0 +1,3 @@
+# Script to build from the host
+
+docker exec cframe-cppdev-1 source/CFrame/docker/cframe/container-run-sample

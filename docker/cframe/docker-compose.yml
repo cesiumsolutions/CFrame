@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+
+    cppdev:
+        ##container_name: cframe-cppdev
+        # Instead of the -it parameter to docker run
+        # stdin_open: true
+        # tty: true
+        build:
+            context: ./
+            dockerfile: cppdev.docker
+        volumes:
+            - ../..:/home/cframe/source/CFrame:ro
+            - ./container-volumes/cppdev/build:/home/cframe/build
+            - ./container-volumes/cppdev/install:/home/cframe/install
+        environment:
+            # Windows only: ensure synching of mounted volumes
+            - CHOKIDAR_USEPOLLING=true
+        networks:
+            - cframe
+        # To keep the service running
+        # See: https://stackoverflow.com/questions/71379527/why-my-docker-compose-container-is-not-running
+        command: tail -f /dev/null
+
+networks:
+    cframe:
