@@ -149,12 +149,7 @@ function( cframe_search_subdirs )
   if ( DEFINED cframe_search_subdirs_DIRECTORIES )
     set( directories ${cframe_search_subdirs_DIRECTORIES} )
   else()
-    cframe_message(
-        MODE FATAL_ERROR
-        TAGS CFrame DirectoryUtils
-        VERBOSITY ${verbosity}
-        "cframe_search_dirs() DIRECTORIES not specified, aborting"
-    )
+    return()
   endif()
 
   if ( DEFINED cframe_search_subdirs_FILTER )
