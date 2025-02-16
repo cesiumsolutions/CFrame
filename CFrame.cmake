@@ -62,6 +62,13 @@ list(
 # Standard CMake Utilities
 include( CMakeParseArguments )
 
+# Set global variable so know when CFrame is being used
+set(
+    CFRAME_FOUND TRUE
+    CACHE INTERNAL
+    "Global variable to indicate CFrame is being used"
+)
+
 # Option to control whether internal CFrame tests are run.
 option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
 
