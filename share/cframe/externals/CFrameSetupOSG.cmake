@@ -21,7 +21,7 @@ endforeach()
 
 if ( WIN32 )
   if ( NOT OSG_VERSION )
-    set( OSG_VERSION 3.6.3 CACHE STRING "OpenSceneGraph Version" )
+    set( OSG_VERSION 3.6.5 CACHE STRING "OpenSceneGraph Version" )
   endif()
 
   if ( NOT OSG_DIR )
