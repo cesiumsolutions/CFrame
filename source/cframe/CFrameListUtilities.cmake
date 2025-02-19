@@ -192,6 +192,23 @@ function( test_cframe_list_mapify )
 
 endfunction() # test_cframe_list_mapify
 
+# From: https://stackoverflow.com/questions/24491129/excluding-directory-somewhere-in-file-structure-from-cmake-sourcefile-list
+# Remove strings matching given regular expression from a list.
+# @param items (in,out) aItems Reference of a list variable to filter.
+# @param filterRegEx Value of regular expression to match.
+function( cframe_filter_list items filterRegEx )
+    # For each item in our list
+    foreach( item ${${items}} )
+        # Check if our items matches our regular expression
+        if ( "${item}" MATCHES ${filterRegEx} )
+            # Remove current item from our list
+            list( REMOVE_ITEM ${items} ${item} )
+        endif ()
+    endforeach()
+    # Provide output parameter
+    set( ${items} ${${items}} PARENT_SCOPE )
+endfunction()
+
 if ( CFRAME_RUN_TESTS )
   test_cframe_list_mapify()
 endif()
