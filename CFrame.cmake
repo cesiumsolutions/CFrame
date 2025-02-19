@@ -84,6 +84,9 @@ include( CFrameIncludeCFrameSource )
 include( CFrameModuleTraversal )
 cframe_load_modules()
 
+# Add libraries provided by CFrame
+add_subdirectory( libs )
+
 # Variable to specify list of directory paths to look for external dependencies.
 set(
     CFRAME_EXTERN_SEARCH_PATHS ""
@@ -96,7 +99,16 @@ include( CFrameProjectTraversal )
 cframe_load_projects()
 
 
-
+# Handle customization of top-level Project name
+# Note: CMake always uses the last call to project() as the top level Project
+#       name.
+set(
+    CFRAME_PROJECT_NAME "CFrame"
+    CACHE STRING "Name of top level Project"
+)
+if ( NOT "${CFRAME_PROJECT_NAME}" STREQUAL "CFrame" )
+  project( ${CFRAME_PROJECT_NAME} )
+endif()
 
 return()
 
