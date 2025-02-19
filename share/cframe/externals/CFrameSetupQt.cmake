@@ -38,21 +38,42 @@ endif()
 if ( WIN32 )
 
   if ( NOT QT_VERSION )
-    set( QT_VERSION 5.1.1 CACHE STRING "Qt Version")
+    set( QT_VERSION 5.15.1 CACHE STRING "Qt Version")
   endif()
   string( SUBSTRING ${QT_VERSION} 0 1 QT_VERSION_MAJOR )
   string( COMPARE EQUAL ${QT_VERSION_MAJOR} "4" QT_VERSION_4 )
   string( COMPARE EQUAL ${QT_VERSION_MAJOR} "5" QT_VERSION_5 )
 
   if ( NOT ENV{QTDIR} AND NOT QTDIR )
-    if ( CFRAME_EXTERN_DIR )
-      set( ENV{QTDIR} ${CFRAME_EXTERN_DIR}/qt-everywhere-opensource-src-${QT_VERSION} )
-      set( QTDIR ${CFRAME_EXTERN_DIR}/qt-everywhere-opensource-src-${QT_VERSION} )
-      set( QT_QMAKE_EXECUTABLE ${QTDIR}/bin/qmake )
-    else()
-      message( FATAL_ERROR "Neither QTDIR nor CFRAME_EXTERN_DIR are set, set one of these appropriately." )
-      return()
+
+    cframe_search_paths(
+        Qt${QT_VERSION}
+        "${CFRAME_EXTERN_SEARCH_PATHS}"
+        QT_ROOT
+    )
+    if ( "${QT_ROOT}" STREQUAL "" )
+      message(
+          FATAL_ERROR
+          "Qt not found, set QTDIR or CFRAME_EXTERN_SEARCH_PATHS"
+      )
     endif()
+
+    # Setup some hard-coded mappings between Qt version and the installation
+    # (sub)directory. Don't really know how else to do this elegantly
+    if ( QT_VERSION_5 )
+      set( QT_SUBPATH "${QT_VERSION}/msvc2019")
+    endif()
+
+    if ( "${CMAKE_SIZEOF_VOID_P}" )
+      set( QT_BITS "_64" )
+    endif()
+
+    set( ENV{QTDIR} ${QT_ROOT}/${QT_SUBPATH}${QT_BITS} )
+    set( QTDIR ${QT_ROOT}/${QT_SUBPATH}${QT_BITS}   )
+    set( QT_QMAKE_EXECUTABLE ${QTDIR}/bin/qmake )
+
+    message( STATUS "Setting QTDIR to ${QTDIR}")
+
   endif()
 
 else()
