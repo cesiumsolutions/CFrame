@@ -94,12 +94,12 @@ endfunction()
 # Will result in the following variables and values being set:
 # - PUBLIC_VALUES:    item0;item1;item2
 # - PRIVATE_VALUES:   item3;item4
-# - INTERFACE_VALUES: ""
+# - INTERFACE_VALUES: item5
 #
 # @param KEYWORDS List of keys to split up ITEMS list.
 # @param ITEMS The list of items to split up.
 # @param SUFFIX The string to append to end of KEYWORD variable for values.
-# @return Defines a set of variables with names ${KEYWORD}_VALUES each of which
+# @return Defines a set of variables with names ${KEYWORD}_${SUFFIX} each of which
 # have the values of that list
 # -----------------------------------------------------------------------------
 function( cframe_list_mapify KEYWORDS ITEMS SUFFIX )
@@ -159,7 +159,7 @@ function( test_cframe_list_mapify )
   if ( NOT "${PUBLIC_VALUES}" STREQUAL "item0;item1;item2" )
     cframe_message(
         MODE SEND_ERROR VERBOSITY 3
-        "test_cframe_list_mapify: PROJECT_VALUES"
+        "test_cframe_list_mapify: PUBLIC_VALUES"
     )
     set( SUCCESS FALSE )
   endif()
@@ -192,6 +192,138 @@ function( test_cframe_list_mapify )
 
 endfunction() # test_cframe_list_mapify
 
+if ( CFRAME_RUN_TESTS )
+  test_cframe_list_mapify()
+endif()
+
+# Parse a flat list with items containing name-value pairs split by a separator
+# (with no spaces).
+# A list of value names is provided in the OUTPUT_VARS variable and the values
+# are stored in variables named ${PREFIX}${VARNAME}_${VARVALUE}${SUFFIX}
+# A list of suffixes specifies the suffixes for multivalue variables.
+# If there are more values than provided suffixes, the last suffix will be a list
+# of the remaining values.
+# If there are less values than provided suffixes, the leftover PREFIX+NAME+SUFFIX
+# will not be defined.
+# If no suffixes are provided, the default is _VALUES.
+#
+# For example:
+#
+# cframe_parse_list_to_key_values(
+#    ITEMS "A:ayy:0" "B:bee:1" "C:see:2"
+#    SEPARATOR ":"
+#    PREFIX "LETTER_"
+#    SUFFIXES "_SOUND" "_INDEX"
+#    OUTPUT_VAR_LIST LETTER_VARS
+# )
+#
+# Will result in the following:
+# LETTER_VARS = A, B, C
+# LETTER_A_SOUND = ayy
+# LETTER_A_INDEX = 0
+# LETTER_B_SOUND = bee
+# LETTER_B_INDEX = 1
+# LETTER_C_SOUND = see
+# LETTER_C_INDEX = 2
+#
+# And could be processed as such:
+#
+# foreach( LETTER ${LETTER_VARS} )
+#    message(
+#        "Letter ${LETTER} sounds like ${${LETTER}_SOUND}"
+#        " and is index ${${LETTER}_INDEX} in the alphabet" )
+# endforeach()
+#
+# See:
+# https://stackoverflow.com/questions/70099620/cmake-string-to-get-key-value-pairs-from-a-string-list-containing-key-values-sep
+function( cframe_parse_list_to_key_values )
+
+  set( options
+  )
+  set( oneValueArgs
+       PREFIX
+       SEPARATOR
+       OUTPUT_VAR_LIST
+  )
+  set( multiValueArgs
+       ITEMS
+       SUFFIXES
+  )
+
+  cmake_parse_arguments(
+      ARGS
+      "${options}"
+      "${oneValueArgs}"
+      "${multiValueArgs}"
+      ${ARGN}
+  )
+
+  # TODO: Implement
+
+
+endfunction() # cframe_parse_list_to_key_values
+
+function( test_cframe_parse_list_to_key_values )
+
+  cframe_parse_list_to_key_values(
+    ITEMS "A:ayy:0" "B:bee:1" "C:see:2"
+    SEPARATOR ":"
+    PREFIX "LETTER_"
+    SUFFIXES "_SOUND" "_INDEX"
+    OUTPUT_VAR_LIST LETTER_VARS
+  )
+
+  foreach( LETTER ${LETTER_VARS} )
+    cframe_message(
+        MODE STATUS VERBOSITY 3
+        "Letter ${LETTER} sounds like ${${LETTER}_SOUND}"
+        " and is index ${${LETTER}_INDEX} in the alphabet" )
+  endforeach()
+
+  set( SUCCESS TRUE )
+  if ( NOT "${LETTER_VARS}" STREQUAL "A;B;C" )
+    cframe_message(
+        MODE SEND_ERROR VERBOSITY 3
+        "cframe_parse_list_to_key_values: LETTER_VARS"
+    )
+    set( SUCCESS FALSE )
+  endif()
+
+  if ( NOT "${LETTER_A_SOUND}" STREQUAL "ayy" )
+    cframe_message(
+        MODE SEND_ERROR VERBOSITY 3
+        "cframe_parse_list_to_key_values: LETTER_A_SOUND"
+    )
+    set( SUCCESS FALSE )
+  endif()
+  if ( NOT "${LETTER_A_INDEX}" STREQUAL "0" )
+    cframe_message(
+        MODE SEND_ERROR VERBOSITY 3
+        "cframe_parse_list_to_key_values: LETTER_A_INDEX"
+    )
+    set( SUCCESS FALSE )
+  endif()
+
+  if ( SUCCESS )
+    cframe_message(
+        MODE STATUS VERBOSITY 2
+        "cframe_parse_list_to_key_values: SUCCEEDED"
+    )
+  else()
+    cframe_message(
+        MODE STATUS VERBOSITY 2
+        "cframe_parse_list_to_key_values: FAILED"
+    )
+  endif()
+
+
+endfunction() # cframe_parse_list_to_key_values
+
+if ( CFRAME_RUN_TESTS )
+  test_cframe_parse_list_to_key_values()
+endif()
+
+
 # From: https://stackoverflow.com/questions/24491129/excluding-directory-somewhere-in-file-structure-from-cmake-sourcefile-list
 # Remove strings matching given regular expression from a list.
 # @param items (in,out) aItems Reference of a list variable to filter.
@@ -208,7 +340,3 @@ function( cframe_filter_list items filterRegEx )
     # Provide output parameter
     set( ${items} ${${items}} PARENT_SCOPE )
 endfunction()
-
-if ( CFRAME_RUN_TESTS )
-  test_cframe_list_mapify()
-endif()
