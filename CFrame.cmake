@@ -69,6 +69,8 @@ set(
     "Global variable to indicate CFrame is being used"
 )
 
+include( CFramePolicies )
+
 # Option to control whether internal CFrame tests are run.
 option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
 
