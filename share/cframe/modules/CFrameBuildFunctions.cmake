@@ -715,6 +715,7 @@ endfunction() # cframe_build_target
 #   RELATIVE_DIR        - The directory from which files should be relative to.
 #                         Defaults to ${CMAKE_CURRENT_SOURCE_DIR}
 #   FILE_PATTERN        - The pattern to use for including files. Defaults to *.
+#   EXCLUDE_FILTERS     - Regular expressions to filter files out of discovered files.
 #   INSTALL_DIR         - the directory to install files to
 #
 # Global variables defined/modified:
@@ -742,6 +743,7 @@ function( cframe_directory_target )
        INSTALL_DIR
   )
   set( multiValueArgs
+       EXCLUDE_FILTERS
   )
 
   cmake_parse_arguments(
@@ -765,6 +767,14 @@ function( cframe_directory_target )
       RELATIVE "${ARGS_RELATIVE_DIR}"
       "${ARGS_FILE_PATTERN}"
   )
+
+  # Filter files
+  foreach( FILTER ${ARGS_EXCLUDE_FILTERS} )
+    list(
+        FILTER ALL_FILES
+        EXCLUDE REGEX "${FILTER}"
+    )
+  endforeach() # ARGS_EXCLUDE_FILTERS loop
 
   source_group(
       TREE "${ARGS_RELATIVE_DIR}"
