@@ -122,6 +122,7 @@ endfunction() # cframe_target_scoped_function
 #   FILES_PUBLIC        - a list of public files (that will be installed to the FILES_INSTALL_DIR)
 #   FILES_PRIVATE       - a list of private files
 #   SOURCES             - a list of source files
+#   PROPERTIES          - a list of properties for the target
 #   QT_MOCFILES         - a list of qt moc files
 #   QT_UIFILES          - a list of qt ui files
 #   QT_QRCFILES         - a list of qt resource files
@@ -183,6 +184,7 @@ function( cframe_build_target )
        FILES_PUBLIC
        FILES_PRIVATE
        SOURCES
+       PROPERTIES
        QT_MOCFILES
        QT_UIFILES
        QT_QRCFILES
@@ -213,6 +215,7 @@ function( cframe_build_target )
   cframe_message( MODE STATUS VERBOSITY 4 "FILES_PUBLIC:        ${ARGS_FILES_PUBLIC}" )
   cframe_message( MODE STATUS VERBOSITY 4 "FILES_PRIVATE:       ${ARGS_FILES_PRIVATE}" )
   cframe_message( MODE STATUS VERBOSITY 4 "SOURCES:             ${ARGS_SOURCES}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "PROPERTIES:          ${ARGS_PROPERTIES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "QT_MOCFILES:         ${ARGS_QT_MOCFILES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "QT_UIFILES:          ${ARGS_QT_UIFILES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "QT_QRCFILES:         ${ARGS_QT_QRCFILES}" )
@@ -643,6 +646,14 @@ function( cframe_build_target )
     )
   endif()
 
+  if ( DEFINED ARGS_PROPERTIES )
+    set_target_properties(
+        ${ARGS_TARGET_NAME}
+        PROPERTIES
+            ${ARGS_PROPERTIES}
+    )
+  endif()
+
   # set the target group
   if ( DEFINED ARGS_GROUP )
     if( NOT "${ARGS_TYPE}" STREQUAL "INTERFACE" )
@@ -815,4 +826,3 @@ function( cframe_directory_target )
   )
 
 endfunction() # cframe_directory_target
-
