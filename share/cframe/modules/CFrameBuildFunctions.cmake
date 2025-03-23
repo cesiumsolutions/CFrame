@@ -715,6 +715,97 @@ endfunction() # cframe_build_target
 
 
 # -----------------------------------------------------------------------------
+# Setup the variables for the subdirectory containing source files for a target.
+# - PREFIX:   The prefix to be prepended to the name of each variable.
+# - SUBDIR:   The subdirectory of the current source directory containing files.
+# - FOLDER:   The folder to display the files in (for IDE-based environments).
+# - HEADERS_PUBLIC:      Public header files.
+# - HEADERS_PRIVATE:     Private header files.
+# - HEADERS_INSTALL_DIR: The directory where to install HEADERS_PUBLIC files.
+# - SOURCES:             Source files.
+# - FILES_PUBLIC:        Miscellaneous public files.
+# - FILES_PRIVATE        Miscellaneous private files
+# - FILES_INSTALL_DIR:  The directory where to install FILES_PUBLIC files.
+# -----------------------------------------------------------------------------
+function( cframe_target_subdir )
+
+  # -----------------------------------
+  # Set up and parse multiple arguments
+  # -----------------------------------
+  set( options
+  )
+  set( oneValueArgs
+      PREFIX
+      SUBDIR
+      FOLDER
+      HEADERS_INSTALL_DIR
+      FILES_INSTALL_DIR
+  )
+  set( multiValueArgs
+     HEADERS_PUBLIC
+     HEADERS_PRIVATE
+     SOURCES
+     FILES_PUBLIC
+     FILES_PRIVATE
+  )
+
+  cmake_parse_arguments(
+      ARGS
+      "${options}"
+      "${oneValueArgs}"
+      "${multiValueArgs}"
+      ${ARGN}
+  )
+
+  set( CATEGORIES
+      HEADERS_PUBLIC
+      HEADERS_PRIVATE
+      SOURCES
+      FILES_PUBLIC
+      FILES_PRIVATE
+  )
+
+  if ( NOT ARGS_PREFIX )
+    message( SEND_ERROR
+        "cframe_target_subdir: No PREFIX argument provided."
+    )
+    return()
+  endif()
+  if ( NOT ARGS_SUBDIR )
+    message( SEND_ERROR
+        "cframe_target_subdir: No SUBDIR argument provided."
+    )
+    return()
+  endif()
+
+  foreach( CATEGORY ${CATEGORIES} )
+    foreach( FILE ${ARGS_${CATEGORY}} )
+      list( APPEND ${ARGS_PREFIX}_${CATEGORY} ${ARGS_SUBDIR}/${FILE} )
+    endforeach() # CATEGORY Files
+
+    set(
+        ${ARGS_PREFIX}_${CATEGORY} ${${ARGS_PREFIX}_${CATEGORY}}
+        PARENT_SCOPE
+    )
+
+    if ( ARGS_FOLDER )
+      source_group(
+          ${ARGS_FOLDER} FILES
+          ${${ARGS_PREFIX}_${CATEGORY}}
+      )
+    else()
+      source_group(
+          TREE ${CMAKE_CURRENT_SOURCE_DIR}
+          FILES
+              ${${ARGS_PREFIX}_${CATEGORY}}
+      )
+    endif()
+
+  endforeach() # CATEGORIES
+
+endfunction() # cframe_target_subdir
+
+# -----------------------------------------------------------------------------
 # Function to create a project and installation based on a directory and
 # preserve its subdirectory structure.
 #
