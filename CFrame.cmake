@@ -74,6 +74,18 @@ include( CFramePolicies )
 # Option to control whether internal CFrame tests are run.
 option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
 
+# Testing
+# TODO: Move to separate testing configuration script
+option( CFRAME_ENABLE_TESTING "Enable running of tests" OFF )
+option( CFRAME_ENABLE_CTEST "Enable CTest" OFF )
+if ( CFRAME_ENABLE_TESTING )
+  enable_testing()
+
+  if ( CFRAME_ENABLE_CTEST )
+    include( CTest )
+  endif()
+endif()
+
 # General Purpose Low-level Utilities
 include( CFrameMessage )
 include( CFrameListUtilities )
