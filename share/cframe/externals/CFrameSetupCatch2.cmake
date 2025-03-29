@@ -6,33 +6,29 @@
 
 set( CATCH_ROOT "" CACHE PATH "Path to Catch 2 installation." )
 
-if ( WIN32 )
+if ( "${CATCH_ROOT}" STREQUAL "" )
+
+  cframe_search_paths(
+      Catch2
+      "${CFRAME_EXTERN_SEARCH_PATHS}"
+      CATCH_ROOT
+  )
 
   if ( "${CATCH_ROOT}" STREQUAL "" )
-
-    cframe_search_paths(
-        Catch2
-        "${CFRAME_EXTERN_SEARCH_PATHS}"
-        CATCH_ROOT
+    message(
+        FATAL_ERROR
+        "Catch2 Not found, set CATCH_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
     )
-
-    if ( "${CATCH_ROOT}" STREQUAL "" )
-      message(
-          FATAL_ERROR
-          "Catch2 Not found, set CATCH_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
-      )
-      return()
-    endif()
-
+    return()
   endif()
 
-else()
-
-  find_package( Catch2 )
-
-endif() # Not WIN32
+endif()
 
 if ( EXISTS "${CATCH_ROOT}" )
+
+  set( Catch2_DIR ${CATCH_ROOT}/lib/cmake/Catch2/ )
+
+  find_package( Catch2 )
 
   list( APPEND CMAKE_MODULE_PATH ${CATCH_ROOT}/lib/cmake/Catch2 )
   include( Catch )
