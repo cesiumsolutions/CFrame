@@ -64,6 +64,8 @@ set( BOOST_COMPONENTS
     filesystem
     graph
     iostreams
+    log
+    log_setup
     program_options
     regex
     serialization
