@@ -38,8 +38,8 @@ if ( WIN32 )
       CACHE STRING
       "Version of Windows to build for"
   )
-  add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
-  add_definitions( "-D_WIN32_WINNT=${CFRAME_WIN_VERSION}" )
+##  add_definitions( "-D_WIN32_WINDOWS=${CFRAME_WIN_VERSION}" )
+##  add_definitions( "-D_WIN32_WINNT=${CFRAME_WIN_VERSION}" )
 
   if ( CFRAME_OPTION_EXCEPTIONS )
     set(
