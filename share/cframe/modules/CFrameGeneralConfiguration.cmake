@@ -18,13 +18,6 @@ set( BUILD_SHARED_LIBS ON )
 set( CMAKE_DEBUG_POSTFIX d CACHE STRING "Postfix for Debug targets" )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
-# For some reason, compiling with -g doesn't automatically define this standard macro
-if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-  add_definitions( -DDEBUG )
-else()
-  add_definitions( -DNDEBUG )
-endif()
-
 option(
     CFRAME_OPTION_EXCEPTIONS
     "Turn on to enable exception handling"

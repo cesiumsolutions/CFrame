@@ -612,6 +612,16 @@ function( cframe_build_target )
     )
   endif()
 
+  if ( "${ARGS_TYPE}" STREQUAL "INTERFACE" )
+    target_compile_definitions(
+      ${ARGS_TARGET_NAME} INTERFACE $<IF:$<CONFIG:DEBUG>,DEBUG,NDEBUG>
+    )
+  elseif ( NOT "${ARGS_TYPE}" STREQUAL "CUSTOM" )
+    target_compile_definitions(
+      ${ARGS_TARGET_NAME} PUBLIC $<IF:$<CONFIG:DEBUG>,DEBUG,NDEBUG>
+    )
+  endif()
+
   if ( DEFINED ARGS_INCLUDE_DIRS )
     cframe_target_scoped_function(
         ${ARGS_TARGET_NAME} "include_directories" "${ARGS_INCLUDE_DIRS}"
