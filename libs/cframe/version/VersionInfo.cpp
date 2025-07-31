@@ -4,8 +4,6 @@
  */
 
 #include "VersionInfo.hpp"
-//#include "Exception.hpp"
-//#include "StringUtils.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/serialization/singleton.hpp> // to be replaced in the future by a generic singleton

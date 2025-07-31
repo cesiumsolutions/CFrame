@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <cstdint>
+
 #if defined( _MSC_VER )
 #  pragma warning( push )
 #  pragma warning( disable : 4251 ) // needs to have dll-interface to be used by
