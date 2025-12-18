@@ -2,6 +2,16 @@
 # Set up Boost package
 # --------------------
 
+if ( POLICY CMP0074 )
+  cmake_policy( SET CMP0074 NEW ) # find_package uses <PACKAGENAME>_ROOT variables
+endif()
+if ( POLICY CMP0144 )
+  cmake_policy( SET CMP0144 OLD ) # find_package uses upper-case <PACKAGENAME>_ROOT
+endif()
+if ( POLICY CMP0167 )
+  cmake_policy( SET CMP0167 OLD )
+endif()
+
 option( Boost_USE_MULTITHREADED "Use the multithreaded versions of Boost libraries." ON )
 set( Boost_ADDITIONAL_VERSIONS
     "1.42" "1.42.0"
