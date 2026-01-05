@@ -3,6 +3,7 @@
 # --------------------
 
 cmake_policy( SET CMP0074 NEW )
+cmake_policy( SET CMP0144 OLD ) # find_package uses upper-case <PACKAGENAME>_ROOT
 cmake_policy( SET CMP0167 OLD )
 
 option( Boost_USE_MULTITHREADED "Use the multithreaded versions of Boost libraries." ON )
