@@ -880,11 +880,11 @@ function( cframe_directory_target )
       "${ARGS_FILE_PATTERN}"
   )
 
-  # Filter files
-  foreach( FILTER ${ARGS_EXCLUDE_FILTERS} )
+  # Filter excluded files
+  foreach( EXCLUDE_FILTER ${ARGS_EXCLUDE_FILTERS} )
     list(
         FILTER ALL_FILES
-        EXCLUDE REGEX "${FILTER}"
+        EXCLUDE REGEX "${EXCLUDE_FILTER}"
     )
   endforeach() # ARGS_EXCLUDE_FILTERS loop
 
@@ -892,30 +892,6 @@ function( cframe_directory_target )
       TREE "${ARGS_RELATIVE_DIR}"
       FILES "${ALL_FILES}"
   )
-
-  # Based on:
-  # https://stackoverflow.com/questions/11096471/how-can-i-install-a-hierarchy-of-files-using-cmake
-  if ( DEFINED ARGS_INSTALL_DIR )
-
-    file( GLOB items "${ARGS_RELATIVE_DIR}/${ARGS_FILE_PATTERN}" )
-
-    foreach( item ${items} )
-      if ( IS_DIRECTORY ${item} )
-        list( APPEND dirsToDeploy ${item} )
-      else()
-        list( APPEND filesToDeploy ${item} )
-      endif()
-    endforeach()
-
-    install(
-        DIRECTORY ${dirsToDeploy}
-        DESTINATION ${ARGS_INSTALL_DIR}
-    )
-    install(
-        FILES ${filesToDeploy}
-        DESTINATION ${ARGS_INSTALL_DIR}
-    )
-  endif() # ARGS_INSTALL_DIR Defined
 
   cframe_build_target(
       TARGET_NAME   "${ARGS_TARGET_NAME}"
@@ -925,5 +901,12 @@ function( cframe_directory_target )
       FILES_PUBLIC
           ${ALL_FILES}
   )
+
+  if ( DEFINED ARGS_INSTALL_DIR )
+    foreach( FILE ${ALL_FILES} )
+      get_filename_component( DIR ${FILE} DIRECTORY )
+      install( FILES ${FILE} DESTINATION ${ARGS_INSTALL_DIR}/${DIR} )
+    endforeach()
+  endif()
 
 endfunction() # cframe_directory_target
