@@ -101,13 +101,6 @@ cframe_load_modules()
 # Add libraries provided by CFrame
 add_subdirectory( libs )
 
-# Variable to specify list of directory paths to look for external dependencies.
-set(
-    CFRAME_EXTERN_SEARCH_PATHS ""
-    CACHE STRING
-    "Directory paths to look for external dependencies."
-)
-
 # Add projects based on variables
 include( CFrameProjectTraversal )
 cframe_load_projects()
