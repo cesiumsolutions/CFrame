@@ -26,14 +26,17 @@ set( Boost_ADDITIONAL_VERSIONS
     "1.72" "1.72.0"
     "1.77" "1.77.0"
     "1.81" "1.81.0"
+    "1.86" "1.86.0"
     "1.87" "1.87.0"
 )
 
 if ( WIN32 )
 
-  if ( ${CMAKE_GENERATOR} STREQUAL "Visual Studio 17 2022" )
-    set( BOOST_VERSION 1_87_0 CACHE STRING "Version of Boost" )
-  elseif( ${CMAKE_GENERATOR} STREQUAL "Visual Studio 16 2019" )
+  if ( "${CMAKE_GENERATOR}" STREQUAL "Visual Studio 18 2026" )
+    set( BOOST_VERSION 1_86_0 CACHE STRING "Version of Boost" )
+  elseif ( "${CMAKE_GENERATOR}" STREQUAL "Visual Studio 17 2022" )
+    set( BOOST_VERSION 1_86_0 CACHE STRING "Version of Boost" )
+  elseif( "${CMAKE_GENERATOR}" STREQUAL "Visual Studio 16 2019" )
     set( BOOST_VERSION 1_77_0 CACHE STRING "Version of Boost" )
   else()
     set( BOOST_VERSION 1_68_0 CACHE STRING "Version of Boost" )
