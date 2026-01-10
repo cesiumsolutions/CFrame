@@ -40,17 +40,36 @@ if ( WIN32 )
   endif()
 
   if ( (NOT BOOST_ROOT) AND ((NOT BOOST_LIBRARYDIR) OR (NOT BOOST_INCLUDEDIR)) )
-    cframe_search_paths(
-        boost_${BOOST_VERSION}
-        "${CFRAME_EXTERN_SEARCH_PATHS}"
-        BOOST_ROOT
-    )
+
+    foreach( EXTERN_PATH ${CFRAME_EXTERN_SEARCH_PATHS}  )
+      if ( EXISTS "${EXTERN_PATH}/boost_${BOOST_VERSION}" )
+        set(
+            BOOST_ROOT "${EXTERN_PATH}/boost_${BOOST_VERSION}"
+            CACHE STRING
+            "Directory to Boost installation"
+        )
+        break()
+      endif()
+    endforeach()
 
     if ( "${BOOST_ROOT}" STREQUAL "" )
-      message(
-          FATAL_ERROR
+
+      cframe_message(
+          MODE FATAL_ERROR
+          TAGS CFrame ExternalLibraries Boost
+          VERBOSITY 1
           "Boost not found, set BOOST_ROOT or CFRAME_EXTERN_SEARCH_PATHS"
       )
+
+    else()
+
+      cframe_message(
+          MODE STATUS
+          TAGS CFrame ExternalLibraries Boost
+          VERBOSITY 1
+          "BOOST_ROOT set to: ${BOOST_ROOT}"
+      )
+
     endif()
   endif()
 
