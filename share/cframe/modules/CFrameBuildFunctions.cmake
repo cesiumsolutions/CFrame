@@ -813,6 +813,20 @@ function( cframe_target_subdir )
 
   endforeach() # CATEGORIES
 
+  if ( DEFINED ARGS_HEADERS_INSTALL_DIR )
+    install(
+        FILES ${${ARGS_PREFIX}_HEADERS_PUBLIC}
+        DESTINATION ${ARGS_HEADERS_INSTALL_DIR}
+    )
+  endif()
+
+  if ( DEFINED ARGS_FILES_INSTALL_DIR )
+    install(
+        FILES ${${ARGS_PREFIX}_FILES_PUBLIC}
+        DESTINATION ${ARGS_FILES_INSTALL_DIR}
+    )
+  endif()
+
 endfunction() # cframe_target_subdir
 
 # -----------------------------------------------------------------------------
