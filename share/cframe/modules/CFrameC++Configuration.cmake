@@ -17,6 +17,11 @@ set_property(
         98 11 14 17 20 23 26
 )
 
+set(
+  CMAKE_CXX_EXTENSIONS OFF
+  CACHE BOOL "C++ extensions enabled/disabled"
+)
+
 if ( WIN32 )
   # Set Compiler version. For Visual Studio, CXX_STANDARD doesn't work, have t0
   # explicitly set it.
