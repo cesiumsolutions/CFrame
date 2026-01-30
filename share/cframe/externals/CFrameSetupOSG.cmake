@@ -47,6 +47,21 @@ if ( WIN32 )
       REQUIRED COMPONENTS ${OSG_PACKAGE_COMPONENTS}
   )
 
+  # OSG plugins are loaded dynamically; copy their folder to the install directory
+  # OSG_DIR typically contains the 'bin/osgPlugins-x.y.z' directory
+  if ( OPENSCENEGRAPH_FOUND AND CFRAME_INSTALL_DEPS )
+
+    file( GLOB OSG_PLUGIN_DIR LIST_DIRECTORIES true "${OSG_DIR}/bin/osgPlugins-*" )
+
+    if ( NOT "${OSG_PLUGIN_DIR}" STREQUAL "" )
+      message( STATUS "Installing OpenSceneGraph plugins from: ${OSG_PLUGIN_DIR}" )
+      install( DIRECTORY ${OSG_PLUGIN_DIR} DESTINATION bin )
+    else()
+      message( WARNING "Could not find OpenSceneGraph plugin directory!" )
+    endif()
+
+  endif()
+
 else()
 
   find_package(
