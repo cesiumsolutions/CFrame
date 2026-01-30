@@ -50,3 +50,4 @@ set(
 )
 
 include( ${CFRAME_DIR}/CFrame.cmake )
+cframe_init()

@@ -48,81 +48,84 @@
 # <endcode>
 # -----------------------------------------------------------------------------
 
-get_filename_component(
-    CFRAME_PARENT_PATH ${CMAKE_CURRENT_LIST_FILE} DIRECTORY
-)
-list(
-    APPEND
-    CMAKE_MODULE_PATH
-    ${CFRAME_PARENT_PATH}/source/cframe
-    ${CFRAME_PARENT_PATH}/share/cframe/modules
-    ${CFRAME_PARENT_PATH}/share/cframe/externals
-)
+macro( cframe_init )
 
-# Standard CMake Utilities
-include( CMakeParseArguments )
+  get_filename_component(
+      CFRAME_PARENT_PATH ${CMAKE_CURRENT_LIST_FILE} DIRECTORY
+  )
+  list(
+      APPEND
+      CMAKE_MODULE_PATH
+      ${CFRAME_PARENT_PATH}/source/cframe
+      ${CFRAME_PARENT_PATH}/share/cframe/modules
+      ${CFRAME_PARENT_PATH}/share/cframe/externals
+  )
 
-# Set global variable so know when CFrame is being used
-set(
-    CFRAME_FOUND TRUE
-    CACHE INTERNAL
-    "Global variable to indicate CFrame is being used"
-)
+  # Standard CMake Utilities
+  include( CMakeParseArguments )
 
-include( CFramePolicies )
+  # Set global variable so know when CFrame is being used
+  set(
+      CFRAME_FOUND TRUE
+      CACHE INTERNAL
+      "Global variable to indicate CFrame is being used"
+  )
 
-# Option to control whether internal CFrame tests are run.
-option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
+  include( CFramePolicies )
+  cframe_init_policies()
 
-# Testing
-# TODO: Move to separate testing configuration script
-option( CFRAME_ENABLE_TESTING "Enable running of tests" OFF )
-option( CFRAME_ENABLE_CTEST "Enable CTest" OFF )
-if ( CFRAME_ENABLE_TESTING )
-  enable_testing()
+  # Option to control whether internal CFrame tests are run.
+  option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
 
-  if ( CFRAME_ENABLE_CTEST )
-    include( CTest )
+  # Testing
+  # TODO: Move to separate testing configuration script
+  option( CFRAME_ENABLE_TESTING "Enable running of tests" OFF )
+  option( CFRAME_ENABLE_CTEST "Enable CTest" OFF )
+  if ( CFRAME_ENABLE_TESTING )
+    enable_testing()
+
+    if ( CFRAME_ENABLE_CTEST )
+      include( CTest )
+    endif()
   endif()
-endif()
 
-# General Purpose Low-level Utilities
-include( CFrameMessage )
-include( CFrameListUtilities )
-include( CFrameDirectoryUtilities )
+  # General Purpose Low-level Utilities
+  include( CFrameMessage )
+  include( CFrameListUtilities )
+  include( CFrameDirectoryUtilities )
 
-# CFrame-specific low-level stuff
-include( CFrameIncludeCFrameSource )
+  # CFrame-specific low-level stuff
+  include( CFrameIncludeCFrameSource )
 
-# Bootstrap Modules loading
-include( CFrameModuleTraversal )
-cframe_load_modules()
+  # Bootstrap Modules loading
+  include( CFrameModuleTraversal )
+  cframe_load_modules()
 
-# Add libraries provided by CFrame
-add_subdirectory( libs )
+  # Add libraries provided by CFrame
+  add_subdirectory( libs )
 
-# Add projects based on variables
-include( CFrameProjectTraversal )
-cframe_load_projects()
+  # Add projects based on variables
+  include( CFrameProjectTraversal )
+  cframe_load_projects()
 
 
-# Handle customization of top-level Project name
-# Note: CMake always uses the last call to project() as the top level Project
-#       name.
-set(
-    CFRAME_PROJECT_NAME "CFrame"
-    CACHE STRING "Name of top level Project"
-)
-if ( NOT "${CFRAME_PROJECT_NAME}" STREQUAL "CFrame" )
-  project( ${CFRAME_PROJECT_NAME} )
-endif()
+  # Handle customization of top-level Project name
+  # Note: CMake always uses the last call to project() as the top level Project
+  #       name.
+  set(
+      CFRAME_PROJECT_NAME "CFrame"
+      CACHE STRING "Name of top level Project"
+  )
+  if ( NOT "${CFRAME_PROJECT_NAME}" STREQUAL "CFrame" )
+    project( ${CFRAME_PROJECT_NAME} )
+  endif()
 
-return()
+endmacro() # cframe_init
 
 # From: https://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script
-get_cmake_property( _variableNames VARIABLES )
-list( SORT _variableNames )
-foreach ( _variableName ${_variableNames} )
-    message( STATUS "${_variableName}=${${_variableName}}" )
-endforeach()
+##get_cmake_property( _variableNames VARIABLES )
+##list( SORT _variableNames )
+##foreach ( _variableName ${_variableNames} )
+##    message( STATUS "${_variableName}=${${_variableName}}" )
+##endforeach()
 
