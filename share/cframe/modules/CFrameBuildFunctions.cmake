@@ -99,6 +99,12 @@ function( cframe_target_scoped_function TARGET FUNCTION_NAME ARGS )
 
 endfunction() # cframe_target_scoped_function
 
+option(
+  CFRAME_INSTALL_DEPS
+  "Global flag to indicate whether to install dependencies"
+  ON
+)
+
 # -----------------------------------------------------------------------------
 # Function to encapsulate the most common standard steps for building a target.
 #
@@ -127,6 +133,7 @@ endfunction() # cframe_target_scoped_function
 #   QT_UIFILES          - a list of qt ui files
 #   QT_QRCFILES         - a list of qt resource files
 #   NO_INSTALL          - Flag to indicate not to install the target in the standard location
+#   INSTALL_DEPS        - Flag to indicate to install dependencies of the target
 #   HEADERS_INSTALL_DIR - the directory to install public headers to
 #   FILES_INSTALL_DIR   - the directory to install public files to
 #   BINARY_INSTALL_DIR  - the directory (prefix) where compiled targets will be installed to
@@ -139,6 +146,7 @@ endfunction() # cframe_target_scoped_function
 #   CFRAME_INSTALL_BIN_DIR
 #   CFRAME_INSTALL_LIB_DIR
 #   CFRAME_INSTALL_DEV_DIR
+#   CFRAME_INSTALL_DEPS     - Global flag to indicate whether to install dependencies
 #
 # Global variables defined/modified:
 #
@@ -161,6 +169,7 @@ function( cframe_build_target )
   # -----------------------------------
   set( options
        NO_INSTALL
+       INSTALL_DEPS
   )
   set( oneValueArgs
        TARGET_NAME
@@ -220,6 +229,7 @@ function( cframe_build_target )
   cframe_message( MODE STATUS VERBOSITY 4 "QT_UIFILES:          ${ARGS_QT_UIFILES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "QT_QRCFILES:         ${ARGS_QT_QRCFILES}" )
   cframe_message( MODE STATUS VERBOSITY 4 "NO_INSTALL:          ${ARGS_NO_INSTALL}" )
+  cframe_message( MODE STATUS VERBOSITY 4 "INSTALL_DEPS:        ${ARGS_INSTALL_DEPS}" )
   cframe_message( MODE STATUS VERBOSITY 4 "HEADERS_INSTALL_DIR: ${ARGS_HEADERS_INSTALL_DIR}" )
   cframe_message( MODE STATUS VERBOSITY 4 "FILES_INSTALL_DIR:   ${ARGS_FILES_INSTALL_DIR}" )
   cframe_message( MODE STATUS VERBOSITY 4 "BINARY_INSTALL_DIR:  ${ARGS_BINARY_INSTALL_DIR}" )
@@ -698,6 +708,7 @@ function( cframe_build_target )
       endif()
       install(
           TARGETS ${ARGS_TARGET_NAME}
+          RUNTIME_DEPENDENCY_SET ${ARGS_TARGET_NAME}_DEPS
           RUNTIME DESTINATION ${BINARY_INSTALL_PREFIX}${CFRAME_INSTALL_BIN_DIR} COMPONENT Runtime
           LIBRARY DESTINATION ${BINARY_INSTALL_PREFIX}${CFRAME_INSTALL_LIB_DIR} COMPONENT Runtime
           ARCHIVE DESTINATION ${BINARY_INSTALL_PREFIX}${CFRAME_INSTALL_DEV_DIR} COMPONENT Development
@@ -719,6 +730,28 @@ function( cframe_build_target )
         FILES ${ARGS_FILES_PUBLIC}
         DESTINATION ${ARGS_FILES_INSTALL_DIR}
     )
+  endif()
+
+  ## install dependencies
+  if ( ARGS_INSTALL_DEPS AND CFRAME_INSTALL_DEPS AND
+     NOT "${ARGS_TYPE}" STREQUAL "CUSTOM" )
+
+     #install(
+     #  TARGETS ${ARGS_TARGET_NAME}
+     #  RUNTIME_DEPENDENCY_SET ${ARGS_TARGET_NAME}_DEPS
+     #)
+     cframe_message( MODE STATUS VERBOSITY 2
+         "CFrame: Installing dependencies for target: ${ARGS_TARGET_NAME}: ${${ARGS_TARGET_NAME}_DEPS}"
+     )
+     install(
+         RUNTIME_DEPENDENCY_SET ${ARGS_TARGET_NAME}_DEPS
+         DESTINATION ${BINARY_INSTALL_PREFIX}${CFRAME_INSTALL_BIN_DIR}
+         PRE_EXCLUDE_REGEXES
+             "api-ms-.*" "ext-ms-.*"
+         POST_EXCLUDE_REGEXES
+             "libgcc_s-.*" "libstdc++-.*" "libwinpthread-.*"
+             ".*WINDOWS[\\\\/]system32.*" "msvcp.*\.dll" "vcruntime.*\.dll"
+         )
   endif()
 
 endfunction() # cframe_build_target
