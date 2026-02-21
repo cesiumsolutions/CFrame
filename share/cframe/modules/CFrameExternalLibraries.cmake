@@ -26,6 +26,7 @@ if ( WIN32 )
     set(
         CFRAME_EXTERN_SEARCH_PATHS
         ${CFRAME_DIR}/../CFrameExtern/source
+        ${CFRAME_DIR}/../CFrameExtern/win64-vc18
         ${CFRAME_DIR}/../CFrameExtern/win64-vc17
         CACHE STRING
         "Directory paths to search for external library dependencies."
