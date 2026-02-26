@@ -28,7 +28,7 @@ if ( EXISTS "${CATCH_ROOT}" )
 
   set( Catch2_DIR ${CATCH_ROOT}/lib/cmake/Catch2/ )
 
-  find_package( Catch2 )
+  find_package( Catch2 GLOBAL REQUIRED )
 
   list( APPEND CMAKE_MODULE_PATH ${CATCH_ROOT}/lib/cmake/Catch2 )
   include( Catch )

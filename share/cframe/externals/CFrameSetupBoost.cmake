@@ -89,7 +89,7 @@ endif()
 # If the BOOST_VERSION is not explicitly specified (e.g. on Linux)
 # then this call will provide the actual version available in the
 # Boost_VERSION variable.
-find_package( Boost REQUIRED )
+find_package( Boost GLOBAL REQUIRED )
 
 set( BOOST_COMPONENTS
     date_time
@@ -143,7 +143,7 @@ endif()
 # See https://stackoverflow.com/questions/57415206/is-there-a-way-to-get-rid-of-the-new-boost-version-may-have-incorrect-or-missin
 set( Boost_NO_WARN_NEW_VERSIONS 1 )
 
-find_package( Boost REQUIRED
+find_package( Boost GLOBAL REQUIRED
     ${BOOST_COMPONENTS}
 )
 
