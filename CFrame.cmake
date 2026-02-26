@@ -74,6 +74,9 @@ macro( cframe_init )
   include( CFramePolicies )
   cframe_init_policies()
 
+  # Make all packages discovered by find_package GLOBAL
+  set( CMAKE_FIND_PACKAGE_TARGETS_GLOBAL TRUE )
+
   # Option to control whether internal CFrame tests are run.
   option( CFRAME_RUN_TESTS "Toggle to run internal CFrame tests" OFF )
 
