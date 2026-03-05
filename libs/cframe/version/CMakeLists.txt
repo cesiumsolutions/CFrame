@@ -1,6 +1,4 @@
 
-include( CFrameSetupBoost )
-
 cframe_generate_version_files(
     PRODUCT_NAME      cframeversion
     PRODUCT_TYPE      Library

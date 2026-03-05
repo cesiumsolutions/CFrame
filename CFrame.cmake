@@ -105,6 +105,10 @@ macro( cframe_init )
   include( CFrameModuleTraversal )
   cframe_load_modules()
 
+  # Setup specified external libraries
+  include( CFrameSetupExternals )
+  cframe_setup_externals()
+
   # Add libraries provided by CFrame
   add_subdirectory( libs )
 
