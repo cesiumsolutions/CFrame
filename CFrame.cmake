@@ -93,6 +93,7 @@ macro( cframe_init )
   endif()
 
   # General Purpose Low-level Utilities
+  include( CFrameSystemInfo )
   include( CFrameMessage )
   include( CFrameListUtilities )
   include( CFrameDirectoryUtilities )
