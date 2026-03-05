@@ -5,6 +5,19 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
+# Print CFrame Information
+# -----------------------------------------------------------------------------
+function( cframe_print_cframe_banner )
+  message( STATUS "    CFrame: High level Framework for CMake" )
+  message( STATUS "" )
+  message( STATUS "Developed by: Cesium Solutions" )
+  message( STATUS "" )
+  message( STATUS "Public Git Repositories:" )
+  message( STATUS "    git@github.com:cesiumsolutions/CFrame.git" )
+  message( STATUS "    git@gitlab.com:cesiumsolutions1/CFrame.git" )
+endfunction() # cframe_print_cframe_banner
+
+# -----------------------------------------------------------------------------
 # Print System Information
 # -----------------------------------------------------------------------------
 function( cframe_print_system_info )
