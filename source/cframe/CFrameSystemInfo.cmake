@@ -48,7 +48,7 @@ function( cframe_print_system_info )
 
 endfunction() # cframe_print_system_info
 
-cframe_print_system_info( )
+
 
 #
 # Gather system information and place them in CFRAME_PLATFORM_ID variables
@@ -158,4 +158,11 @@ set( CFRAME_PLATFORM_ID "${PLAT_ID}"
   CACHE STRING "CFrame Platform Identifier" FORCE 
 )
 
-message( STATUS "CFRAME_PLATFORM_ID: ${CFRAME_PLATFORM_ID}" )
+message( STATUS "=================================================" )
+
+cframe_print_cframe_banner()
+message( STATUS "" )
+cframe_print_system_info()
+
+message( STATUS "    CFRAME_PLATFORM_ID:     ${CFRAME_PLATFORM_ID}" )
+message( STATUS "=================================================" )
