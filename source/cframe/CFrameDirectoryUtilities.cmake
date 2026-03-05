@@ -377,8 +377,24 @@ function( cframe_add_subdirectory subDir )
           BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
       )
 
-      get_filename_component( name ${absPath} NAME_WE )
-      add_subdirectory( ${absPath} ${name} )
+      # Get the part of the path after the drive letter (e.g., /Users/Name/Project)
+      cmake_path( GET absPath RELATIVE_PART absPathName )
+
+      # Add the subdirectory
+      # We use ${absPathName} to prevent "source directory does not contain a CMakeLists.txt"
+      # or "binary directory" errors when working with paths outside the root.
+
+      get_filename_component( lastDir "${absPathName}" NAME)
+      # Make a unique name as some lastDirs may be the same
+      string( MD5 hashName "${absPathName}" )
+
+      #message( "AbsPath:  ${absPath}" )
+      #message( "lastDir:  ${lastDir}" )
+      #message( "HashName: ${absPathName}" )
+
+      #add_subdirectory( "${absPath}" "${CMAKE_CURRENT_BINARY_DIR}/${lastDir}_${hashName}" )
+      add_subdirectory( "${absPath}" "${CMAKE_CURRENT_BINARY_DIR}/${lastDir}" )
+
   else()
       add_subdirectory( ${relPath} )
   endif()
